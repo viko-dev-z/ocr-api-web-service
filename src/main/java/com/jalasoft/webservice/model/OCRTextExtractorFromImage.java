@@ -25,7 +25,7 @@ public class OCRTextExtractorFromImage implements IConverter {
 
     public OCRTextExtractorFromImage() {
         this.tesseract = new Tesseract();
-        this.defaultTessData = "/thirdParty/Tess4J/tessdata";
+        this.defaultTessData = "./thirdParty/Tess4J/tessdata";
     }
 
     @Override

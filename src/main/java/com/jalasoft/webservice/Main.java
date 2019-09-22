@@ -22,13 +22,5 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Main {
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
-
-        Criteria criteria = new Criteria();
-        criteria.setFilePath("/temp/image.png");
-        criteria.setLang("eng");
-        IConverter textFromImage = new OCRTextExtractorFromImage();
-        String textResult = textFromImage.textExtractor(criteria);
-        System.out.println(textResult);
     }
-
 }

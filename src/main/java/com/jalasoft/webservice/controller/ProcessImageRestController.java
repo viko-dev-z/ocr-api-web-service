@@ -13,6 +13,10 @@
 package com.jalasoft.webservice.controller;
 
 
+import com.jalasoft.webservice.model.Criteria;
+import com.jalasoft.webservice.model.CriteriaOCR;
+import com.jalasoft.webservice.model.IConverter;
+import com.jalasoft.webservice.model.OCRTextExtractorFromImage;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,19 +37,23 @@ public class ProcessImageRestController {
     @RequestMapping("/ocr/processImage")
     @PostMapping
     public String extractText(
-            @RequestParam(value="file") MultipartFile file,
-            @RequestParam(value="language", defaultValue="eng") String language) {
-        try{
-        String filePath="D:/temp/_image_"+file.getOriginalFilename();
-        Path location = Paths.get(filePath);
-        Files.copy(file.getInputStream(),location);
-// Alex uncomment these lines once you implement OCRModel.java logic
-//      OCRModel OCR = new OCRModel(filePath, language);
-//      String result  = OCR.extract();
+            @RequestParam(value = "file") MultipartFile file,
+            @RequestParam(value = "language", defaultValue = "eng") String language) {
+        String result = "Error while extracting text from Image";
+        try {
+            // first we save the image file into a local machine path
+            String filePath = "D:/temp/_image_" + file.getOriginalFilename();
+            Path location = Paths.get(filePath);
+            Files.copy(file.getInputStream(), location);
+            // here we proceed to use the extract Text from Image functionality by using Tesseract wrapper and Criteria
+            Criteria imageCriteria = new CriteriaOCR();
+            imageCriteria.setFilePath(filePath);
+            imageCriteria.setLang(language);
+            IConverter extractor = new OCRTextExtractorFromImage();
+            result = extractor.textExtractor(imageCriteria);
         } catch (IOException e) {
             e.printStackTrace();
         }
-//      retun result;
-        return "Done..";
+        return result;
     }
 }
