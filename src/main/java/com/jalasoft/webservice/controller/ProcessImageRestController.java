@@ -40,9 +40,10 @@ public class ProcessImageRestController {
             @RequestParam(value = "file") MultipartFile file,
             @RequestParam(value = "language", defaultValue = "eng") String language) {
         String result = "Error while extracting text from Image";
+        int random = (int)(Math.random() * 100 + 1);
         try {
             // first we save the image file into a local machine path
-            String filePath = "D:/temp/_image_" + file.getOriginalFilename();
+            String filePath = "./temp/_image" + random + "_"  + file.getOriginalFilename();
             Path location = Paths.get(filePath);
             Files.copy(file.getInputStream(), location);
             // here we proceed to use the extract Text from Image functionality by using Tesseract wrapper and Criteria
