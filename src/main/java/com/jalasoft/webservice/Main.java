@@ -12,6 +12,9 @@
 
 package com.jalasoft.webservice;
 
+import com.jalasoft.webservice.model.Criteria;
+import com.jalasoft.webservice.model.IConverter;
+import com.jalasoft.webservice.model.OCRTextExtractorFromImage;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -20,5 +23,4 @@ public class Main {
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
     }
-
 }
