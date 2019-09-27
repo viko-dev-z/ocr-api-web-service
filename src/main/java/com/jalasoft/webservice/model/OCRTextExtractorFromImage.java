@@ -20,35 +20,33 @@ import java.util.ArrayList;
 
 public class OCRTextExtractorFromImage implements IConverter {
     private Tesseract tesseract;
-    private String textResult;
     private File imageFile;
     private ArrayList<String> supportedLanguages;
 
     public OCRTextExtractorFromImage() {
         this.tesseract = new Tesseract();
         tesseract.setDatapath("./thirdParty/Tess4J/tessdata");
+        supportedLanguages = new ArrayList<String>();
         loadSupportedLanguages();
     }
 
     @Override
-    public String textExtractor(Criteria criteria) {
-        IJSONMessage jsonMessage;
+    public Response textExtractor(Criteria criteria) {
+        Response jsonMessage;
         if(criteria.isSupportedLanguage(supportedLanguages)){
-            jsonMessage = new JSONOkMessage();
-            textResult = jsonMessage.getMessage(textExtractorForSupportedLanguages(criteria));
+            jsonMessage = new ResponseOkMessage();
+            jsonMessage.setMessage(textExtractorForSupportedLanguages(criteria));
         } else {
-            jsonMessage = new JSONErrorMessage();
-            textResult = jsonMessage.getMessage("Language not supported");
+            jsonMessage = new ResponseErrorMessage();
+            jsonMessage.setMessage("Language not supported");
         }
-        return textResult;
+        return jsonMessage;
     }
 
     private String textExtractorForSupportedLanguages(Criteria criteria){
         String textResultFromValidLang = "";
         try {
             tesseract.setLanguage(criteria.getLang());
-            // the path of your tess data folder
-            // inside the extracted file
             imageFile = new File(criteria.getFilePath());
             textResultFromValidLang = tesseract.doOCR(imageFile);
 
