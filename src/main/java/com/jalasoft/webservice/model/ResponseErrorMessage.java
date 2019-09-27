@@ -14,16 +14,19 @@ package com.jalasoft.webservice.model;
 
 import org.json.JSONObject;
 
-public class JSONOkMessage extends AbstractJSONMessage {
-
-    public JSONOkMessage() {
+public class ResponseErrorMessage extends ResponseAbstract {
+    public ResponseErrorMessage() {
         this.JSONMessage = new JSONObject();
+        this.JSONMessage.put("Status", "400");
     }
 
     @Override
-    public String getMessage(String message) {
-        JSONMessage.put("Status", "200");
-        JSONMessage.put("ExtractedMessage", message);
+    public String getMessage() {
         return JSONMessage.toString();
+    }
+
+    @Override
+    public void setMessage(String message) {
+        JSONMessage.put("Message", message);
     }
 }

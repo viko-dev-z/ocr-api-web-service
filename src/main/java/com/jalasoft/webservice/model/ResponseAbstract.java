@@ -12,6 +12,8 @@
 
 package com.jalasoft.webservice.model;
 
-public interface IJSONMessage {
-    String getMessage(String message);
+import org.json.JSONObject;
+
+public abstract class ResponseAbstract implements Response {
+    JSONObject JSONMessage;
 }
