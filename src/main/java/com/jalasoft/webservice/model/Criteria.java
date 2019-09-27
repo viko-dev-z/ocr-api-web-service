@@ -12,9 +12,11 @@
 
 package com.jalasoft.webservice.model;
 
+import java.util.ArrayList;
+
 public class Criteria {
-    String filePath;
-    String lang;
+    private String filePath;
+    private String lang;
 
     public Criteria() {
         this.filePath = "";
@@ -35,5 +37,9 @@ public class Criteria {
 
     public void setLang(String lang) {
         this.lang = lang;
+    }
+
+    public boolean isSupportedLanguage(ArrayList<String> supportedLanguajes){
+        return supportedLanguajes.contains(getLang());
     }
 }
