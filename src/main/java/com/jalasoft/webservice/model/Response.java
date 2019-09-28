@@ -12,7 +12,7 @@
 
 package com.jalasoft.webservice.model;
 
-public interface IConverter {
-    Response textExtractor(Criteria criteria);
-    // cambiar a Response clase nueva con status y message
+public interface Response {
+    String getMessage();
+    void setMessage(String message);
 }

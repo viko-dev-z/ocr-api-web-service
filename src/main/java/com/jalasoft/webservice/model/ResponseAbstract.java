@@ -14,6 +14,6 @@ package com.jalasoft.webservice.model;
 
 import org.json.JSONObject;
 
-public abstract class AbstractJSONMessage implements IJSONMessage {
+public abstract class ResponseAbstract implements Response {
     JSONObject JSONMessage;
 }

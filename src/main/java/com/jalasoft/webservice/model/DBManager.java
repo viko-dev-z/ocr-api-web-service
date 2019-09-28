@@ -12,6 +12,20 @@
 
 package com.jalasoft.webservice.model;
 
-public interface IJSONMessage {
-    String getMessage(String message);
+import com.jalasoft.webservice.database.DBQuery;
+
+public class DBManager {
+    DBQuery dbQuery;
+
+     public DBManager() {
+         dbQuery = new DBQuery();
+     }
+
+     public void addFile(String  checksum, String path){
+         dbQuery.insert(checksum, path);
+     }
+
+     public String getPath(String checksum){
+         return  dbQuery.getPath(checksum);
+     }
 }
