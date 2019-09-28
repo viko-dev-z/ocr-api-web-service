@@ -36,7 +36,7 @@ public class DBQuery {
     }
 
     public String getPath (String checksum) {
-        sqlQuery = "Select path from fileState Where checksum = '" + checksum + "'";
+        sqlQuery = "Select path from " + ConnectionDB.getInstance().getTableName() + " Where checksum = '" + checksum + "'";
         ResultSet resultSet;
         String path = null;
         try (Statement state = conn.createStatement()) {
