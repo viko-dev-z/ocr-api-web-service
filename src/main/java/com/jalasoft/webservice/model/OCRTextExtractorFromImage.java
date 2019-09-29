@@ -12,6 +12,9 @@
 
 package com.jalasoft.webservice.model;
 
+import com.jalasoft.webservice.controller.IResponse;
+import com.jalasoft.webservice.controller.ResponseErrorMessage;
+import com.jalasoft.webservice.controller.ResponseOkMessage;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 
@@ -19,6 +22,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class OCRTextExtractorFromImage implements IConverter {
+
     private Tesseract tesseract;
     private File imageFile;
     private ArrayList<String> supportedLanguages;
@@ -31,8 +35,8 @@ public class OCRTextExtractorFromImage implements IConverter {
     }
 
     @Override
-    public Response textExtractor(Criteria criteria) {
-        Response jsonMessage;
+    public IResponse textExtractor(Criteria criteria) {
+        IResponse jsonMessage;
         if(criteria.isSupportedLanguage(supportedLanguages)){
             jsonMessage = new ResponseOkMessage();
             jsonMessage.setMessage(textExtractorForSupportedLanguages(criteria));

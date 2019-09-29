@@ -10,11 +10,11 @@
  * /
  */
 
-package com.jalasoft.webservice.model;
+package com.jalasoft.webservice.controller;
 
 import org.json.JSONObject;
 
-public class ResponseOkMessage extends ResponseAbstract {
+public class ResponseOkMessage extends Response {
 
     public ResponseOkMessage() {
         this.JSONMessage = new JSONObject();

@@ -10,11 +10,12 @@
  * /
  */
 
-package com.jalasoft.webservice.model;
+package com.jalasoft.webservice.controller;
 
 import org.json.JSONObject;
 
-public class ResponseErrorMessage extends ResponseAbstract {
+public class ResponseErrorMessage extends Response {
+
     public ResponseErrorMessage() {
         this.JSONMessage = new JSONObject();
         this.JSONMessage.put("Status", "400");

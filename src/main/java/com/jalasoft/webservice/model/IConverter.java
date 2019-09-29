@@ -12,7 +12,8 @@
 
 package com.jalasoft.webservice.model;
 
+import com.jalasoft.webservice.controller.IResponse;
+
 public interface IConverter {
-    Response textExtractor(Criteria criteria);
-    // cambiar a Response clase nueva con status y message
+    IResponse textExtractor(Criteria criteria);
 }

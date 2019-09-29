@@ -23,8 +23,9 @@ public class DBQuery {
     }
 
     public void insert (String checksum, String filePath){
-        sqlQuery = "Insert into " + ConnectionDB.getInstance().getTableName() + "(checksum, path) values (?, ?)";
-
+        sqlQuery = "Insert into "
+                  + ConnectionDB.getInstance().getTableName()
+                  + "(checksum, path) values (?, ?)";
         try {
             PreparedStatement state = conn.prepareStatement(sqlQuery);
             state.setString(1, checksum);
@@ -36,7 +37,9 @@ public class DBQuery {
     }
 
     public String getPath (String checksum) {
-        sqlQuery = "Select path from " + ConnectionDB.getInstance().getTableName() + " Where checksum = '" + checksum + "'";
+        sqlQuery = "Select path from "
+                  + ConnectionDB.getInstance().getTableName()
+                  + " Where checksum = '" + checksum + "'";
         ResultSet resultSet;
         String path = null;
         try (Statement state = conn.createStatement()) {

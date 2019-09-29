@@ -12,14 +12,9 @@
 
 package com.jalasoft.webservice.model;
 
-import java.util.List;
-
 public class CriteriaOCR extends Criteria {
-
-    File imageFile;
 
     public CriteriaOCR() {
         super();
-
     }
 }

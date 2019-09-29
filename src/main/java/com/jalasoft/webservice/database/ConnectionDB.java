@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class ConnectionDB {
+
     private static ConnectionDB instance;
     private static Connection conn;
     private static String tableName;
@@ -39,7 +40,11 @@ public class ConnectionDB {
             Class.forName("org.sqlite.JDBC");
             conn = DriverManager.getConnection("jdbc:sqlite:webService.db");
             Statement state = conn.createStatement();
-            state.execute("create table if not exists " + tableName + "(Id integer primary key, Checksum varchar(32), Path varchar (250));");
+            state.execute("create table if not exists "
+                    + tableName
+                    + "( Id integer primary key, " +
+                      "Checksum varchar(32), " +
+                      "Path varchar (250) );");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {

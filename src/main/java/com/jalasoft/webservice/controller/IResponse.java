@@ -10,10 +10,11 @@
  * /
  */
 
-package com.jalasoft.webservice.model;
+package com.jalasoft.webservice.controller;
 
-import org.json.JSONObject;
+public interface IResponse {
 
-public abstract class ResponseAbstract implements Response {
-    JSONObject JSONMessage;
+    String getMessage();
+
+    void setMessage(String message);
 }

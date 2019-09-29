@@ -14,15 +14,14 @@ package com.jalasoft.webservice.controller;
 
 
 import com.jalasoft.webservice.model.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -36,29 +35,32 @@ public class ProcessImageRestController {
     @PostMapping
     public String extractText(
             @RequestParam(value = "file") MultipartFile file,
-            @RequestParam(value = "language", defaultValue = "eng") String language,
-            @RequestParam(value = "checksum") String checksum) {
+            @RequestParam(value = "language", defaultValue = "eng")
+                           String language,
+            @RequestParam(value = "checksum") String checksum,
+            @Value("${imagePath}") String propertyFilePath) {
 
-        String responseResult = null;
-        int random = (int)(Math.random() * 100 + 1);
+        String result = null;
         try {
-            // first we save the image file into a local machine path
+            // we check if there is a file with same checksum
             String filePath = dbm.getPath(checksum);
             if (filePath == null){
-                filePath = "./temp/_image" + random + "_"  + file.getOriginalFilename();
+                // file is saved in path configured in application.properties
+                filePath = propertyFilePath + file.getOriginalFilename();
                 dbm.addFile(checksum, filePath);
                 Path location = Paths.get(filePath);
-                Files.copy(file.getInputStream(), location); // standard copy, replace existing mode
+                Files.copy(file.getInputStream(), location, REPLACE_EXISTING);
+
             }
-            // here we proceed to use the extract Text from Image functionality by using Tesseract wrapper and Criteria
+            // Extracting Text from Image by using Tess4j and Criteria
             Criteria imageCriteria = new CriteriaOCR();
             imageCriteria.setFilePath(filePath);
             imageCriteria.setLang(language);
             IConverter extractor = new OCRTextExtractorFromImage();
-            responseResult = extractor.textExtractor(imageCriteria).getMessage();
+            result = extractor.textExtractor(imageCriteria).getMessage();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return responseResult;
+        return result;
     }
 }
