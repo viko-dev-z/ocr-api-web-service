@@ -13,10 +13,7 @@
 package com.jalasoft.webservice.controller;
 
 
-import com.jalasoft.webservice.model.Criteria;
-import com.jalasoft.webservice.model.CriteriaOCR;
-import com.jalasoft.webservice.model.IConverter;
-import com.jalasoft.webservice.model.OCRTextExtractorFromImage;
+import com.jalasoft.webservice.model.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,15 +40,27 @@ public class ProcessImageRestController {
         int random = (int)(Math.random() * 100 + 1);
         try {
             // first we save the image file into a local machine path
-            String filePath = "./temp/_image" + random + "_"  + file.getOriginalFilename();
-            Path location = Paths.get(filePath);
-            Files.copy(file.getInputStream(), location);
+            /*
+            * */
+            DBManager dbManager = new DBManager();
+            String filePath = dbManager.getPath("checksum");
+            if (filePath == null) { //buscar acerca de properties 'file properties'
+                filePath = "./temp/_image" + random + "_"  + file.getOriginalFilename();
+                Path location = Paths.get(filePath);
+                Files.copy(file.getInputStream(), location); //replace if exists buscar esa opcion
+                dbManager.addFile("checksum", filePath);
+            }
+            /*
+            * */
+            //String filePath = "./temp/_image" + random + "_"  + file.getOriginalFilename();
+            //Path location = Paths.get(filePath);
+            //Files.copy(file.getInputStream(), location);
             // here we proceed to use the extract Text from Image functionality by using Tesseract wrapper and Criteria
             Criteria imageCriteria = new CriteriaOCR();
             imageCriteria.setFilePath(filePath);
             imageCriteria.setLang(language);
             IConverter extractor = new OCRTextExtractorFromImage();
-            result = extractor.textExtractor(imageCriteria);
+            result = extractor.textExtractor(imageCriteria).getMessage();
         } catch (IOException e) {
             e.printStackTrace();
         }
