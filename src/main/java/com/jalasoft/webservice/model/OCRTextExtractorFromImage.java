@@ -12,38 +12,51 @@
 
 package com.jalasoft.webservice.model;
 
+import com.jalasoft.webservice.controller.Response;
+import com.jalasoft.webservice.controller.ResponseOkMessage;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
-
 import java.io.File;
 
+/**
+ * Class to manage tesseract library.
+ *
+ * @author Alex
+ * @version 1.0
+ */
 public class OCRTextExtractorFromImage implements IConverter {
+
     private Tesseract tesseract;
-    private String defaultTessData;
-    private String textResult;
     private File imageFile;
 
+    /**
+     * Default constructor which initialize Tesseract library
+     */
     public OCRTextExtractorFromImage() {
         this.tesseract = new Tesseract();
-        this.defaultTessData = "./thirdParty/Tess4J/tessdata";
+        tesseract.setDatapath("./thirdParty/Tess4J/tessdata");
     }
 
     @Override
-    public String textExtractor(Criteria criteria) {
-        try {
-            tesseract.setDatapath(defaultTessData);
-            tesseract.setLanguage(criteria.getLang());
-            // the path of your tess data folder
-            // inside the extracted file
-            imageFile = new File(criteria.getFilePath());
-            textResult = tesseract.doOCR(imageFile);
+    public Response textExtractor(Criteria criteria) {
+        Response jsonMessage = new ResponseOkMessage();
+        jsonMessage.setCode("200");
+        jsonMessage.setMessage(textExtractorForSupportedLanguages((CriteriaOCR) criteria));
+        return jsonMessage;
+    }
 
-            // path of your image file
-            System.out.print(textResult);
+    private String textExtractorForSupportedLanguages(CriteriaOCR criteria){
+        String textResultFromValidLang = "";
+        try {
+            tesseract.setLanguage(criteria.getLang());
+            imageFile = new File(criteria.getFilePath());
+            textResultFromValidLang = tesseract.doOCR(imageFile);
+            System.out.print(textResultFromValidLang);
         }
         catch (TesseractException e) {
             e.printStackTrace();
         }
-        return textResult;
+        return textResultFromValidLang;
     }
+
 }

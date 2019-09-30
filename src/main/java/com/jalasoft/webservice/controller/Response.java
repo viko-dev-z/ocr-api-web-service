@@ -10,7 +10,19 @@
  * /
  */
 
-package com.jalasoft.webservice.database;
+package com.jalasoft.webservice.controller;
 
-public class FileRepository {
+import org.json.JSONObject;
+
+/**
+ * Abstract class that represents Response object
+ *
+ * @author  Alex
+ * @version 1.0
+ */
+public abstract class Response implements IResponse {
+
+    // Variable for JSONObject custom object
+    JSONObject JSONMessage;
+
 }

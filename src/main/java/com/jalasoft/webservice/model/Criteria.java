@@ -12,13 +12,24 @@
 
 package com.jalasoft.webservice.model;
 
-public class Criteria {
-    String filePath;
-    String lang;
 
+
+/**
+ * Superclass to manage the Criteria for API parameters.
+ *
+ * @author Alex and Victor
+ * @version 1.0
+ */
+public abstract class Criteria {
+
+    // path variable that will be used in all subclasses
+    private String filePath;
+
+    /**
+     * Default constructor
+     */
     public Criteria() {
         this.filePath = "";
-        this.lang = "eng";
     }
 
     public String getFilePath() {
@@ -29,11 +40,4 @@ public class Criteria {
         this.filePath = filePath;
     }
 
-    public String getLang() {
-        return lang;
-    }
-
-    public void setLang(String lang) {
-        this.lang = lang;
-    }
 }
