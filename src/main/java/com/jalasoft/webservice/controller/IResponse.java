@@ -13,10 +13,19 @@
 package com.jalasoft.webservice.controller;
 
 /**
- * Implements REST Endpoint to extract Text from a PDF file
- *
- * @author  Victor
- * @version 1.0
- */
-public class ProcessPdfRestController {
+* Interface for Response implementation
+*
+* @author Alex
+* @version 1.0
+*/
+public interface IResponse {
+
+    // abstract method for returning a String message in JSON format
+    String getJSON();
+
+    // abstract method to initialize code JSON property
+    void setCode(String code);
+
+    // abstract method to initialize message JSON property
+    void setMessage(String message);
 }
