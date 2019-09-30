@@ -14,7 +14,15 @@ package com.jalasoft.webservice.controller;
 
 import org.json.JSONObject;
 
+/**
+ * Abstract class that represents Response object
+ *
+ * @author  Alex
+ * @version 1.0
+ */
 public abstract class Response implements IResponse {
 
+    // Variable for JSONObject custom object
     JSONObject JSONMessage;
+
 }

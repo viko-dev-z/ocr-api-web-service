@@ -14,8 +14,19 @@ package com.jalasoft.webservice.controller;
 
 import org.json.JSONObject;
 
+/**
+ * Subclass that implements methods from IResponse interface
+ * and initialize JSONMessage instance variable
+ *
+ * @author  Alex
+ * @version 1.0
+ */
 public class ResponseErrorMessage extends Response {
 
+    /**
+     * Default constructor which initialize JSON Message
+     * for unsuccessful API requests with 400 status code
+    */
     public ResponseErrorMessage() {
         this.JSONMessage = new JSONObject();
         this.JSONMessage.put("Status", "400");

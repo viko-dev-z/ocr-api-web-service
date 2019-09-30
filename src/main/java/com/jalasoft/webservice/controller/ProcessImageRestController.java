@@ -23,6 +23,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
+/**
+ * Implements REST Endpoint to extract Text from Image
+ *
+ * @author  Victor
+ * @version 1.0
+*/
+
 @RestController
 @RequestMapping("/api/v1")
 public class ProcessImageRestController {
@@ -31,6 +38,24 @@ public class ProcessImageRestController {
     public ProcessImageRestController() {
     }
 
+    /**
+     * In order to invoke this method, please execute the API query
+     * Endpoint:
+     * http://localhost:8080/api/v1/ocr/processImage
+     *
+     * Body:
+     * {
+     *   "file": "valid image path",
+     *   "language" : "eng/spa",
+     *   "checksum" : "MD5 Format"
+     * }
+     *
+     * @return a String value with JSON Response Format
+     * {
+     *     "Status" : "200",
+     *     "ExtractedMessage": "Text"
+     * }
+     */
     @RequestMapping("/ocr/processImage")
     @PostMapping
     public String extractText(
@@ -53,7 +78,7 @@ public class ProcessImageRestController {
 
             }
             // Extracting Text from Image by using Tess4j and Criteria
-            Criteria imageCriteria = new CriteriaOCR();
+            CriteriaOCR imageCriteria = new CriteriaOCR();
             imageCriteria.setFilePath(filePath);
             imageCriteria.setLang(language);
             IConverter extractor = new OCRTextExtractorFromImage();

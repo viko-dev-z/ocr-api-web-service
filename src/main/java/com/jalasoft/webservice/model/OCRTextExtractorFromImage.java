@@ -17,37 +17,35 @@ import com.jalasoft.webservice.controller.ResponseErrorMessage;
 import com.jalasoft.webservice.controller.ResponseOkMessage;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
-
 import java.io.File;
-import java.util.ArrayList;
 
+/**
+ * Class to manage tesseract library.
+ *
+ * @author Alex
+ * @version 1.0
+ */
 public class OCRTextExtractorFromImage implements IConverter {
 
     private Tesseract tesseract;
     private File imageFile;
-    private ArrayList<String> supportedLanguages;
 
+    /**
+     * Default constructor which initialize Tesseract library
+     */
     public OCRTextExtractorFromImage() {
         this.tesseract = new Tesseract();
         tesseract.setDatapath("./thirdParty/Tess4J/tessdata");
-        supportedLanguages = new ArrayList<String>();
-        loadSupportedLanguages();
     }
 
-    @Override
     public IResponse textExtractor(Criteria criteria) {
         IResponse jsonMessage;
-        if(criteria.isSupportedLanguage(supportedLanguages)){
-            jsonMessage = new ResponseOkMessage();
-            jsonMessage.setMessage(textExtractorForSupportedLanguages(criteria));
-        } else {
-            jsonMessage = new ResponseErrorMessage();
-            jsonMessage.setMessage("Language not supported");
-        }
+        jsonMessage = new ResponseOkMessage();
+        jsonMessage.setMessage(textExtractorForSupportedLanguages((CriteriaOCR) criteria));
         return jsonMessage;
     }
 
-    private String textExtractorForSupportedLanguages(Criteria criteria){
+    private String textExtractorForSupportedLanguages(CriteriaOCR criteria){
         String textResultFromValidLang = "";
         try {
             tesseract.setLanguage(criteria.getLang());
@@ -62,8 +60,4 @@ public class OCRTextExtractorFromImage implements IConverter {
         return textResultFromValidLang;
     }
 
-    private void loadSupportedLanguages(){
-        supportedLanguages.add("eng");
-        supportedLanguages.add("spa");
-    }
 }

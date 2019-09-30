@@ -17,17 +17,29 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * Singleton implementation to establish Database Connection only once.
+ *
+ * @author Alex
+ * @version 1.0
+ */
 public class ConnectionDB {
 
     private static ConnectionDB instance;
     private static Connection conn;
-    private static String tableName;
+    // Constant to assign table name
+    static final String TABLE_NAME = "fileState";
 
+    /**
+     * Private constructor to prevent direct instantiation.
+     */
     private ConnectionDB() {
-        tableName = "fileState";
-        this.init(tableName);
+        this.init();
     }
 
+    /**
+     * public method that ensures only one instance is returned.
+     */
     public static ConnectionDB getInstance()  {
         if (instance == null) {
             instance = new ConnectionDB();
@@ -35,13 +47,16 @@ public class ConnectionDB {
         return instance;
     }
 
-    private void init(String tableName)  {
+    /**
+     * private method which establish a database connection.
+     */
+    private void init()  {
         try {
             Class.forName("org.sqlite.JDBC");
             conn = DriverManager.getConnection("jdbc:sqlite:webService.db");
             Statement state = conn.createStatement();
             state.execute("create table if not exists "
-                    + tableName
+                    + TABLE_NAME
                     + "( Id integer primary key, " +
                       "Checksum varchar(32), " +
                       "Path varchar (250) );");
@@ -52,11 +67,11 @@ public class ConnectionDB {
         }
     }
 
+    /**
+     * public method that returns a Connection instance.
+     */
     public Connection getConnection() {
         return conn;
     }
 
-    public String getTableName(){
-        return tableName;
-    }
 }

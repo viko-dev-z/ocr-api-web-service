@@ -12,5 +12,11 @@
 
 package com.jalasoft.webservice.controller;
 
+/**
+ * Implements REST Endpoint to extract Text from a PDF file
+ *
+ * @author  Victor
+ * @version 1.0
+ */
 public class ProcessPdfRestController {
 }

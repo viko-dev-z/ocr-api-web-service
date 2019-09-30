@@ -14,17 +14,29 @@ package com.jalasoft.webservice.database;
 
 import java.sql.*;
 
+/**
+ * Executes queries to insert or retrieve data from database.
+ *
+ * @author Alex
+ * @version 1.0
+ */
 public class DBQuery {
     private String sqlQuery;
     private Connection conn;
 
+    /**
+     * Constructor to instantiate the ConnectionDB singleton.
+     */
     public DBQuery(){
         conn = ConnectionDB.getInstance().getConnection();
     }
 
+    /**
+     * Method that inserts a File record.
+     */
     public void insert (String checksum, String filePath){
         sqlQuery = "Insert into "
-                  + ConnectionDB.getInstance().getTableName()
+                  + ConnectionDB.getInstance().TABLE_NAME
                   + "(checksum, path) values (?, ?)";
         try {
             PreparedStatement state = conn.prepareStatement(sqlQuery);
@@ -36,9 +48,13 @@ public class DBQuery {
         }
     }
 
+    /**
+     * Method that iterates over the data table for a matching checksum
+     * and returns the path.
+     */
     public String getPath (String checksum) {
         sqlQuery = "Select path from "
-                  + ConnectionDB.getInstance().getTableName()
+                  + ConnectionDB.getInstance().TABLE_NAME
                   + " Where checksum = '" + checksum + "'";
         ResultSet resultSet;
         String path = null;
