@@ -14,14 +14,22 @@ package com.jalasoft.webservice.model;
 
 import com.jalasoft.webservice.database.DBQuery;
 
+/**
+ * Implements class to manage queries
+ *
+ * @author  Alex
+ * @version 1.0
+ */
 public class DBManager {
+
+    // Object instance that manages insert and select DB queries for Files.
     DBQuery dbQuery;
 
      public DBManager() {
          dbQuery = new DBQuery();
      }
 
-     public void addFile(String  checksum, String path){
+     public void addFile(String checksum, String path){
          dbQuery.insert(checksum, path);
      }
 

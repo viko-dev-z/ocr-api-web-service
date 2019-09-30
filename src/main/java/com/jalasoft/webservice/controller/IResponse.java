@@ -21,8 +21,11 @@ package com.jalasoft.webservice.controller;
 public interface IResponse {
 
     // abstract method for returning a String message in JSON format
-    String getMessage();
+    String getJSON();
 
-    // abstract method to initialize String message parameter
+    // abstract method to initialize code JSON property
+    void setCode(String code);
+
+    // abstract method to initialize message JSON property
     void setMessage(String message);
 }

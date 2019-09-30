@@ -29,12 +29,16 @@ public class ResponseOkMessage extends Response {
      */
     public ResponseOkMessage() {
         this.JSONMessage = new JSONObject();
-        this.JSONMessage.put("Status", "200");
     }
 
     @Override
-    public String getMessage() {
+    public String getJSON() {
         return JSONMessage.toString();
+    }
+
+    @Override
+    public void setCode(String code) {
+        JSONMessage.put("Status", code );
     }
 
     @Override

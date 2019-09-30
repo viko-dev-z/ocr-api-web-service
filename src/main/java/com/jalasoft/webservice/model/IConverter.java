@@ -12,8 +12,16 @@
 
 package com.jalasoft.webservice.model;
 
-import com.jalasoft.webservice.controller.IResponse;
+import com.jalasoft.webservice.controller.Response;
 
+/**
+ * Interface to be used by Image to Text and PDF to Text Converters.
+ *
+ * @author  Victor
+ * @version 1.0
+ */
 public interface IConverter {
-    IResponse textExtractor(Criteria criteria);
+
+    // Abstract method which converts image text using a criteria.
+    Response textExtractor(Criteria criteria);
 }
