@@ -46,4 +46,16 @@ public final class FileValidator {
         else
             return false;
     }
+
+    public static String getMimeType(String filePath){
+        Path path = new File(filePath).toPath();
+        String mimeType = "";
+        try {
+            mimeType = Files.probeContentType(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return mimeType;
+
+    }
 }
