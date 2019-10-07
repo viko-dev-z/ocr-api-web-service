@@ -13,11 +13,13 @@
 package com.jalasoft.webservice.controller;
 
 import com.jalasoft.webservice.common.FileValidator;
-import com.jalasoft.webservice.model.CriteriaOCR;
+import com.jalasoft.webservice.error_handler.ConvertException;
+import com.jalasoft.webservice.model.CriteriaPDF;
 import com.jalasoft.webservice.model.DBManager;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
+
+import com.jalasoft.webservice.model.IConverter;
+import com.jalasoft.webservice.model.PDFConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,8 +59,10 @@ public class ProcessPdfRestController {
      *
      * Body:
      * {
-     *   "file": "valid image path",
-     *   "checksum" : "MD5 Format"
+     *   "file": "valid PDF file path",
+     *   "checksum" : "MD5 Format",
+     *   "startPage": "start page to be extracted"
+     *   "endPage": "last page to be extracted"
      * }
      *
      * @return a String value with JSON Response Format
@@ -82,11 +86,11 @@ public class ProcessPdfRestController {
 
         // we check if there is a file with same checksum
         String filePath = dbm.getPath(checksum);
-        String fileChecksum = FileValidator.getFileChecksum(filePath);
+        //String fileChecksum = FileValidator.getFileChecksum(filePath);
         try {
             if (filePath == null){
                 filePath = propertyFilePath + file.getOriginalFilename();
-                // validate if file is an image.
+                // validate if file is pdf.
                 if (! FileValidator.isValidPDFFile(filePath)){
                     myResponses = ResponsesSupported.FILE_UNSUPPORTED;
                     return processResponse();
@@ -99,50 +103,25 @@ public class ProcessPdfRestController {
                             REPLACE_EXISTING);
                 }
             }
-            // Extracting Text from Image by using Tess4j and Criteria
-            CriteriaOCR imageCriteria = new CriteriaOCR();
-            imageCriteria.setFilePath(filePath);
 
+            // Extracting Text from PDF by using PdfBox and Criteria
+            CriteriaPDF pdfCriteria = new CriteriaPDF();
+            pdfCriteria.setFilePath(filePath);
+            pdfCriteria.setStartPage(startPage);
+            pdfCriteria.setEndPage(endPage);
 
-            PDFTextStripper tStripper = new PDFTextStripper();
-            tStripper.setStartPage(startPage);
-            tStripper.setEndPage(endPage);
-
-            PDDocument document = PDDocument.load(file.getInputStream());
-
-            document.getClass();
-String pdfFileInText = "";
-String[] lines;
-StringBuilder content = new StringBuilder();
-            if (!document.isEncrypted()) {
-                pdfFileInText = tStripper.getText(document);
-                lines = pdfFileInText.split("\\r\\n\\r\\n");
-
-                for (String line : lines) {
-                    System.out.println(line);
-                    content.append(line);
-                }
-            }
-
-            System.out.println(content.toString());
+            IConverter converter = new PDFConverter();
 
             myResponses = ResponsesSupported.OK;
-            jsonMessage.setMessage(content.toString());
+            jsonMessage = new ResponseOkMessage();
+            jsonMessage.setCode("200");
+            jsonMessage =  converter.textExtractor(pdfCriteria);
             return processResponse();
 
-//            if (imageCriteria.isSupportedLanguage(language)){
-//                myResponses = ResponsesSupported.OK;
-//                imageCriteria.setLang(language);
-//                IConverter converter = new OCRTextExtractorFromImage();
-//                jsonMessage = converter.textExtractor(imageCriteria);
-//                return processResponse();
-//            }
-//            else {
-//                myResponses = ResponsesSupported.LANG_UNSUPPORTED;
-//                return processResponse();
-//            }
-
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (
+        ConvertException e) {
             e.printStackTrace();
         }
         return processResponse();
@@ -158,6 +137,7 @@ StringBuilder content = new StringBuilder();
             case OK:
                 response = ResponseEntity
                         .status(HttpStatus.OK)
+                        .header("Content-Type", "application/json; charset=UTF-8")
                         .body(jsonMessage.getJSON());
                 break;
             case LANG_UNSUPPORTED:
@@ -166,14 +146,16 @@ StringBuilder content = new StringBuilder();
                 jsonMessage.setMessage("Not a Valid Language property");
                 response = ResponseEntity
                         .status(HttpStatus.BAD_REQUEST)
+                        .header("Content-Type", "application/json; charset=UTF-8")
                         .body(jsonMessage.getJSON());
                 break;
             case FILE_UNSUPPORTED:
                 jsonMessage = new ResponseErrorMessage();
                 jsonMessage.setCode("415");
-                jsonMessage.setMessage("Not a Valid Image Format");
+                jsonMessage.setMessage("Not a Valid PDF Format");
                 response = ResponseEntity
                         .status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                        .header("Content-Type", "application/json; charset=UTF-8")
                         .body(jsonMessage.getJSON());
                 break;
         }

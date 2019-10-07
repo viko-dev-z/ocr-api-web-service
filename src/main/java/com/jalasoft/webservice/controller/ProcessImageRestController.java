@@ -14,6 +14,7 @@ package com.jalasoft.webservice.controller;
 
 
 import com.jalasoft.webservice.common.FileValidator;
+import com.jalasoft.webservice.error_handler.ConvertException;
 import com.jalasoft.webservice.model.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -105,7 +106,7 @@ public class ProcessImageRestController {
             if (imageCriteria.isSupportedLanguage(language)){
                 myResponses = ResponsesSupported.OK;
                 imageCriteria.setLang(language);
-                IConverter converter = new OCRTextExtractorFromImage();
+                IConverter converter = new OCRConverter() ;
                 jsonMessage = converter.textExtractor(imageCriteria);
                 return processResponse();
             }
@@ -115,6 +116,8 @@ public class ProcessImageRestController {
             }
 
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ConvertException e) {
             e.printStackTrace();
         }
         return processResponse();
@@ -130,6 +133,7 @@ public class ProcessImageRestController {
             case OK:
                 response = ResponseEntity
                         .status(HttpStatus.OK)
+                        .header("Content-Type", "application/json; charset=UTF-8")
                         .body(jsonMessage.getJSON());
                 break;
             case LANG_UNSUPPORTED:
@@ -138,6 +142,7 @@ public class ProcessImageRestController {
                 jsonMessage.setMessage("Not a Valid Language property");
                 response = ResponseEntity
                         .status(HttpStatus.BAD_REQUEST)
+                        .header("Content-Type", "application/json; charset=UTF-8")
                         .body(jsonMessage.getJSON());
                 break;
             case FILE_UNSUPPORTED:
@@ -146,6 +151,7 @@ public class ProcessImageRestController {
                 jsonMessage.setMessage("Not a Valid Image Format");
                 response = ResponseEntity
                         .status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                        .header("Content-Type", "application/json; charset=UTF-8")
                         .body(jsonMessage.getJSON());
                 break;
         }
