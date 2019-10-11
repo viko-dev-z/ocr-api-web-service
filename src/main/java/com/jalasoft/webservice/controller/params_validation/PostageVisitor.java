@@ -28,10 +28,12 @@ public class PostageVisitor implements Visitor {
         validateCommonData(checksumParam);
         if (checksumParam.getValue().toString().length() != 32 ){
             validationResult += checksumParam.getName() + " has invalid length";
+            throw new ParamsInvalidException("The " + checksumParam.getName() + " has an invalid length\n");
         }
 
         if (!checksumParam.getValue().toString().matches("-?[0-9a-fA-F]+")){
             validationResult += checksumParam.getName() + " has invalid characters: " + checksumParam.getValue().toString();
+            throw new ParamsInvalidException("The " + checksumParam.getName() + " has an invalid characters\n");
         }
     }
 
