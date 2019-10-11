@@ -13,15 +13,18 @@
 package com.jalasoft.webservice.controller;
 
 import com.jalasoft.webservice.common.FileValidator;
+import com.jalasoft.webservice.controller.params_validation.ChecksumParam;
+import com.jalasoft.webservice.controller.params_validation.GenericParam;
+import com.jalasoft.webservice.controller.params_validation.IntParam;
+import com.jalasoft.webservice.controller.params_validation.ValidateParams;
 import com.jalasoft.webservice.error_handler.ConvertException;
+import com.jalasoft.webservice.error_handler.ParamsInvalidException;
 import com.jalasoft.webservice.model.CriteriaPDF;
-import com.jalasoft.webservice.model.DBManager;
 
 
 import com.jalasoft.webservice.model.IConverter;
 import com.jalasoft.webservice.model.PDFConverter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -75,7 +78,14 @@ public class ProcessPdfRestController extends ProcessAbstractRestController {
             @RequestParam(value = "checksum") String checksum,
             @RequestParam(value = "startPage") String startPageText,
             @RequestParam(value = "endPage") String endPageText,
-            @Value("${imagePath}") String propertyFilePath) {
+            @Value("${imagePath}") String propertyFilePath) throws ParamsInvalidException {
+
+        ValidateParams params = new ValidateParams();
+        params.addParam(new GenericParam("file", file));
+        params.addParam(new ChecksumParam("checksum", checksum));
+        params.addParam(new IntParam("startPageText", startPageText));
+        params.addParam(new IntParam("endPageText", endPageText));
+        String result = params.validateParams();
 
         int startPage = parseInt(startPageText);
         int endPage = parseInt(endPageText);
