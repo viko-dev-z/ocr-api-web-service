@@ -36,4 +36,8 @@ public class DBManager {
      public String getPath(String checksum){
          return  dbQuery.getPath(checksum);
      }
+
+     public User getUser(String user, String password){
+         return dbQuery.getUser(user, password);
+     }
 }
