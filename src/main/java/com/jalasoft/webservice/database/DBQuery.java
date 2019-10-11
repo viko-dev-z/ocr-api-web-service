@@ -12,6 +12,8 @@
 
 package com.jalasoft.webservice.database;
 
+import com.jalasoft.webservice.model.User;
+
 import java.sql.*;
 
 /**
@@ -68,5 +70,29 @@ public class DBQuery {
             e.printStackTrace();
         }
         return path;
+    }
+
+    public User getUser(String user, String password){
+        sqlQuery = "Select id, user, password, role, email FROM "
+                    + ConnectionDB.getInstance().USER_TABLE_NAME
+                    //+ " Where user = '" + user + "' and password = '" + password + "'";
+                + " Where user = '" + user + "' and password = '" + password + "'";
+        ResultSet resultSet;
+        User userObject = null;
+        try (Statement state = conn.createStatement()) {
+            resultSet = state.executeQuery(sqlQuery);
+            while (resultSet.next()){
+                userObject = new User();
+                //userObject.setUser(resultSet.getString("id"));
+                userObject.setUser(resultSet.getString("user"));
+                userObject.setPassword(resultSet.getString("password"));
+                userObject.setRole(resultSet.getString("role"));
+                userObject.setEmail(resultSet.getString("email"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return userObject;
     }
 }
