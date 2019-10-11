@@ -33,7 +33,7 @@ public class ResponseOkMessage extends Response {
 
     @Override
     public String getJSON() {
-        return JSONMessage.toString();
+        return JSONMessage.toString(4);
     }
 
     @Override

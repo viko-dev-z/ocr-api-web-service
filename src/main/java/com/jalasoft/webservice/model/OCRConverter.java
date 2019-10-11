@@ -14,9 +14,11 @@ package com.jalasoft.webservice.model;
 
 import com.jalasoft.webservice.controller.Response;
 import com.jalasoft.webservice.controller.ResponseOkMessage;
+import com.jalasoft.webservice.error_handler.ConvertException;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Class to manage tesseract library.
@@ -24,7 +26,7 @@ import java.io.File;
  * @author Alex
  * @version 1.0
  */
-public class OCRTextExtractorFromImage implements IConverter {
+public class OCRConverter implements IConverter {
 
     private Tesseract tesseract;
     private File imageFile;
@@ -32,20 +34,25 @@ public class OCRTextExtractorFromImage implements IConverter {
     /**
      * Default constructor which initialize Tesseract library
      */
-    public OCRTextExtractorFromImage() {
+    public OCRConverter() {
         this.tesseract = new Tesseract();
         tesseract.setDatapath("./thirdParty/Tess4J/tessdata");
     }
 
     @Override
-    public Response textExtractor(Criteria criteria) {
+    public Response textExtractor(Criteria criteria) throws ConvertException {
         Response jsonMessage = new ResponseOkMessage();
         jsonMessage.setCode("200");
+        try {
         jsonMessage.setMessage(textExtractorForSupportedLanguages((CriteriaOCR) criteria));
+        }
+        catch (Exception e) {
+            throw new ConvertException("message2", e);
+        }
         return jsonMessage;
     }
 
-    private String textExtractorForSupportedLanguages(CriteriaOCR criteria){
+    private String textExtractorForSupportedLanguages(CriteriaOCR criteria) throws ConvertException {
         String textResultFromValidLang = "";
         try {
             tesseract.setLanguage(criteria.getLang());
@@ -54,8 +61,12 @@ public class OCRTextExtractorFromImage implements IConverter {
             System.out.print(textResultFromValidLang);
         }
         catch (TesseractException e) {
-            e.printStackTrace();
+            throw new ConvertException("message", e);
         }
+//        catch (IOException ex) {
+//            throw new ConvertException("message2", ex);
+//
+//        }
         return textResultFromValidLang;
     }
 

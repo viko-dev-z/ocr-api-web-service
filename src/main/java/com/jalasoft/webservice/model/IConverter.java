@@ -13,6 +13,7 @@
 package com.jalasoft.webservice.model;
 
 import com.jalasoft.webservice.controller.Response;
+import com.jalasoft.webservice.error_handler.ConvertException;
 
 /**
  * Interface to be used by Image to Text and PDF to Text Converters.
@@ -23,5 +24,5 @@ import com.jalasoft.webservice.controller.Response;
 public interface IConverter {
 
     // Abstract method which converts image text using a criteria.
-    Response textExtractor(Criteria criteria);
+    Response textExtractor(Criteria criteria) throws ConvertException;
 }
