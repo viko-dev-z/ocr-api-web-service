@@ -43,11 +43,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @RestController
 @RequestMapping("/api/v1")
-public class ProcessPdfRestController {
-    DBManager dbm = new DBManager();
-    ResponsesSupported myResponses = ResponsesSupported.OK;
-    Response jsonMessage;
-    private String textConverted;
+public class ProcessPdfRestController extends ProcessAbstractRestController {
 
     public ProcessPdfRestController() {
     }

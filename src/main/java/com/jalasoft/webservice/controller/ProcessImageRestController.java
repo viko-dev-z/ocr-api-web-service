@@ -44,10 +44,8 @@ enum ResponsesSupported {
  */
 @RestController
 @RequestMapping("/api/v1")
-public class ProcessImageRestController {
-    DBManager dbm = new DBManager();
-    ResponsesSupported myResponses = ResponsesSupported.OK;
-    Response jsonMessage;
+public class ProcessImageRestController extends ProcessAbstractRestController {
+
     private String textConverted;
 
     public ProcessImageRestController() {
