@@ -44,10 +44,8 @@ enum ResponsesSupported {
  */
 @RestController
 @RequestMapping("/api/v1")
-public class ProcessImageRestController {
-    DBManager dbm = new DBManager();
-    ResponsesSupported myResponses = ResponsesSupported.OK;
-    Response jsonMessage;
+public class ProcessImageRestController extends ProcessAbstractRestController {
+
     private String textConverted;
 
     public ProcessImageRestController() {
@@ -121,41 +119,6 @@ public class ProcessImageRestController {
             e.printStackTrace();
         }
         return processResponse();
-    }
-
-    /**
-     * Process a Response Body according to Enum value
-     * assigned in processImage method.
-     */
-    private ResponseEntity processResponse() {
-        ResponseEntity response = null;
-        switch(myResponses) {
-            case OK:
-                response = ResponseEntity
-                        .status(HttpStatus.OK)
-                        .header("Content-Type", "application/json; charset=UTF-8")
-                        .body(jsonMessage.getJSON());
-                break;
-            case LANG_UNSUPPORTED:
-                jsonMessage = new ResponseErrorMessage();
-                jsonMessage.setCode("400");
-                jsonMessage.setMessage("Not a Valid Language property");
-                response = ResponseEntity
-                        .status(HttpStatus.BAD_REQUEST)
-                        .header("Content-Type", "application/json; charset=UTF-8")
-                        .body(jsonMessage.getJSON());
-                break;
-            case FILE_UNSUPPORTED:
-                jsonMessage = new ResponseErrorMessage();
-                jsonMessage.setCode("415");
-                jsonMessage.setMessage("Not a Valid Image Format");
-                response = ResponseEntity
-                        .status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-                        .header("Content-Type", "application/json; charset=UTF-8")
-                        .body(jsonMessage.getJSON());
-                break;
-        }
-        return response;
     }
 
 }
