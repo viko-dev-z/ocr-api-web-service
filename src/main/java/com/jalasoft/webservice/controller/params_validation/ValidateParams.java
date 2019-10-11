@@ -27,11 +27,15 @@ public class ValidateParams {
         params.add(param);
     }
 
-    public String validateParams() throws ParamsInvalidException {
+    public String validateParams() {
         PostageVisitor visitor = new PostageVisitor();
 
         for(Visitable param: params){
-            param.accept(visitor);
+            try {
+                param.accept(visitor);
+            } catch (ParamsInvalidException paramIE){
+                paramIE.printStackTrace();
+            }
         }
         String validationResult = visitor.getValidationResult();
         return validationResult;
