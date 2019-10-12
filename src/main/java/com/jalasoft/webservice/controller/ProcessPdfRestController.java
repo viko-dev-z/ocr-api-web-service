@@ -24,13 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import static java.lang.Integer.parseInt;
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 /**
  * Implements REST Endpoint to extract Text from a PDF file
@@ -82,44 +76,31 @@ public class ProcessPdfRestController extends ProcessAbstractRestController {
         params.addParam(new IntParam("endPageText", endPageText));
         ResponseEntity result = params.validateParams();
 
-        if (result.getStatusCode().equals(HttpStatus.BAD_REQUEST)){
+        if (result.getStatusCode().equals(HttpStatus.BAD_REQUEST)) {
             return result;
         }
 
-        int startPage = parseInt(startPageText);
-        int endPage = parseInt(endPageText);
-
-        // we check if there is a file with same checksum
         String filePath = dbm.getPath(checksum);
 
+        // Add the file to the temp folder and to the database if not exists
+        FileValidator.processFile(propertyFilePath, file, dbm, checksum);
+
         try {
-            if (filePath == null){
-                filePath = propertyFilePath + file.getOriginalFilename();
-
-                    // file is saved in path of application.properties
-                    dbm.addFile(checksum, filePath);
-                    Path location = Paths.get(filePath);
-                    Files.copy(file.getInputStream(), location, REPLACE_EXISTING);
-            }
-
             // Extracting Text from PDF by using PdfBox and Criteria
             CriteriaPDF pdfCriteria = new CriteriaPDF();
             pdfCriteria.setFilePath(filePath);
-            pdfCriteria.setStartPage(startPage);
-            pdfCriteria.setEndPage(endPage);
+            pdfCriteria.setStartPage(parseInt(startPageText));
+            pdfCriteria.setEndPage(parseInt(endPageText));
 
             IConverter converter = new PDFConverter();
 
             myResponses = ResponsesSupported.OK;
             jsonMessage = new ResponseOkMessage();
             jsonMessage.setCode("200");
-            jsonMessage =  converter.textExtractor(pdfCriteria);
+            jsonMessage = converter.textExtractor(pdfCriteria);
             return processResponse();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (
-        ConvertException e) {
+        } catch (ConvertException e) {
             e.printStackTrace();
         }
         return processResponse();
