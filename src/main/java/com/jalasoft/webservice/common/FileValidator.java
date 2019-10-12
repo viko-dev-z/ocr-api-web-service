@@ -80,12 +80,12 @@ public final class FileValidator {
         return mimeType;
     }
 
-    public static String getFileChecksum(String filePath){
+    public static String getFileChecksum(InputStream fileInputStream){
         String checksumMD5 = "";
         MessageDigest md = null;
         try {
             md = MessageDigest.getInstance("MD5");
-            checksumMD5 = checksum(filePath, md);
+            checksumMD5 = checksum(fileInputStream, md);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
@@ -93,13 +93,13 @@ public final class FileValidator {
         return  checksumMD5;
     }
 
-    private static String checksum(String filepath, MessageDigest md) {
+    private static String checksum(InputStream fileInputStream, MessageDigest md) {
 
         // DigestInputStream is better, but you also can hash file like this.
-        try (InputStream fis = new FileInputStream(filepath)) {
+        try {
             byte[] buffer = new byte[1024];
             int nread;
-            while ((nread = fis.read(buffer)) != -1) {
+            while ((nread = fileInputStream.read(buffer)) != -1) {
                 md.update(buffer, 0, nread);
             }
         } catch (IOException e) {

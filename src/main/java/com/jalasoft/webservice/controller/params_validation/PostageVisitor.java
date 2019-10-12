@@ -13,6 +13,10 @@
 package com.jalasoft.webservice.controller.params_validation;
 import com.jalasoft.webservice.common.FileValidator;
 import com.jalasoft.webservice.error_handler.ParamsInvalidException;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+
 import static java.lang.Integer.parseInt;
 
 public class PostageVisitor implements Visitor {
@@ -65,8 +69,25 @@ public class PostageVisitor implements Visitor {
     @Override
     public void visit(FileParam fileParam) throws ParamsInvalidException {
         validateCommonData(fileParam);
-        if (!FileValidator.isValidPDFFile(fileParam.getValue().toString())){
+        MultipartFile theFile = (MultipartFile)fileParam.getValue();
+        if (!FileValidator.isValidPDFFile(theFile.getOriginalFilename())){
             message = "The " + fileParam.getName() + " is not a PDF file name: " + fileParam.getValue().toString();
+            validationResult.append(message);
+            throw new ParamsInvalidException(message);
+        }
+        String theFileChecksum = "";
+        try {
+            theFileChecksum = FileValidator.getFileChecksum(theFile.getInputStream());
+        } catch (IOException e) {
+            message = "Error to generate the file checksum";
+            validationResult.append(message);
+            throw new ParamsInvalidException(message);
+        }
+
+        if (!theFileChecksum.equals(fileParam.getInputChecksum())){
+            message = "File checksum does not match. ";
+            message.concat("Expected: " + theFileChecksum);
+            message.concat(" - Actual: " + fileParam.getInputChecksum());
             validationResult.append(message);
             throw new ParamsInvalidException(message);
         }

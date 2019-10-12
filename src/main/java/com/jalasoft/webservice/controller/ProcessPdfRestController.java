@@ -76,8 +76,8 @@ public class ProcessPdfRestController extends ProcessAbstractRestController {
             @Value("${imagePath}") String propertyFilePath) {
 
         ValidateParams params = new ValidateParams();
-        params.addParam(new FileParam("file", propertyFilePath + file.getOriginalFilename()));
         params.addParam(new ChecksumParam("checksum", checksum));
+        params.addParam(new FileParam("file", file, checksum));
         params.addParam(new IntParam("startPageText", startPageText));
         params.addParam(new IntParam("endPageText", endPageText));
         ResponseEntity result = params.validateParams();
@@ -85,27 +85,21 @@ public class ProcessPdfRestController extends ProcessAbstractRestController {
         if (result.getStatusCode().equals(HttpStatus.BAD_REQUEST)){
             return result;
         }
+
         int startPage = parseInt(startPageText);
         int endPage = parseInt(endPageText);
 
         // we check if there is a file with same checksum
         String filePath = dbm.getPath(checksum);
-        //String fileChecksum = FileValidator.getFileChecksum(filePath);
+
         try {
             if (filePath == null){
                 filePath = propertyFilePath + file.getOriginalFilename();
-                // validate if file is pdf.
-                if (! FileValidator.isValidPDFFile(filePath)){
-                    myResponses = ResponsesSupported.FILE_UNSUPPORTED;
-                    return processResponse();
-                }
-                else {
+
                     // file is saved in path of application.properties
                     dbm.addFile(checksum, filePath);
                     Path location = Paths.get(filePath);
-                    Files.copy(file.getInputStream(), location,
-                            REPLACE_EXISTING);
-                }
+                    Files.copy(file.getInputStream(), location, REPLACE_EXISTING);
             }
 
             // Extracting Text from PDF by using PdfBox and Criteria
