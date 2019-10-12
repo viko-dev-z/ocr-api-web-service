@@ -25,4 +25,7 @@ public abstract class Response implements IResponse {
     // Variable for JSONObject custom object
     JSONObject JSONMessage;
 
+    public void setCode(String code) {
+        JSONMessage.put("Status", code );
+    }
 }
