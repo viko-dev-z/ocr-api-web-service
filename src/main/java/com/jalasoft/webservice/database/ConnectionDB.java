@@ -62,13 +62,13 @@ public class ConnectionDB {
                       "Checksum varchar(32), " +
                       "Path varchar (250) );");
             state = conn.createStatement();
-            state.execute("create table if not exists " +
-                     USER_TABLE_NAME +
-                     "( Id integer primary key, "+
-                     "user varchar(32) UNIQUE, " +
-                     "password varchar(8), " +
-                     "role varchar(16), " +
-                     "email varchar(16) UNIQUE );");
+            state.execute("CREATE TABLE IF NOT EXISTS "
+                    + USER_TABLE_NAME
+                    + "(Id integer PRIMARY KEY UNIQUE NOT NULL, "
+                    + "user TEXT(32) UNIQUE, "
+                    + "password TEXT(16), "
+                    + "role TEXT(16), "
+                    + "email TEXT(32) UNIQUE);");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
