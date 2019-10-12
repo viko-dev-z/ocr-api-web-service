@@ -73,14 +73,25 @@ public class DBQuery {
     }
 
     public User getUser(String user, String password){
-        sqlQuery = "Select id, user, password, role, email FROM "
-                    + ConnectionDB.getInstance().USER_TABLE_NAME
+        sqlQuery = "SELECT *" +
+                " FROM " + ConnectionDB.getInstance().USER_TABLE_NAME +
+                " WHERE user= ? AND password= ?";
+                //"Select * FROM "
+                  //  + ConnectionDB.getInstance().USER_TABLE_NAME
                     //+ " Where user = '" + user + "' and password = '" + password + "'";
-                + " Where user = '" + user + "' and password = '" + password + "'";
+                //+ " Where user='" + user + "' and password='" + password + "'";
         ResultSet resultSet;
         User userObject = null;
-        try (Statement state = conn.createStatement()) {
-            resultSet = state.executeQuery(sqlQuery);
+        Statement state;
+        try  {
+            PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
+            preparedStatement.setString(1, user);
+            preparedStatement.setString(2, password);
+            boolean executed = preparedStatement.execute();
+            resultSet = preparedStatement.executeQuery();
+            //state = conn.createStatement();
+            //state.executeQuery(sqlQuery);
+            //resultSet = state.getResultSet();
             while (resultSet.next()){
                 userObject = new User();
                 //userObject.setUser(resultSet.getString("id"));
