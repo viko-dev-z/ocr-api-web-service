@@ -45,7 +45,7 @@ public class ValidateParams {
         params.add(checksum);
     }
 
-    public void addParam(IntParam endPageText) {
-        params.add(endPageText);
+    public void addParam(IntParam intParam) {
+        params.add(intParam);
     }
 }
