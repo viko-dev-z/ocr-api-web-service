@@ -80,15 +80,13 @@ public class ProcessPdfRestController extends ProcessAbstractRestController {
             return result;
         }
 
-        String filePath = dbm.getPath(checksum);
-
         // Add the file to the temp folder and to the database if not exists
         FileValidator.processFile(propertyFilePath, file, dbm, checksum);
 
         try {
             // Extracting Text from PDF by using PdfBox and Criteria
             CriteriaPDF pdfCriteria = new CriteriaPDF();
-            pdfCriteria.setFilePath(filePath);
+            pdfCriteria.setFilePath(dbm.getPath(checksum));
             pdfCriteria.setStartPage(parseInt(startPageText));
             pdfCriteria.setEndPage(parseInt(endPageText));
 
@@ -99,7 +97,6 @@ public class ProcessPdfRestController extends ProcessAbstractRestController {
             jsonMessage.setCode("200");
             jsonMessage = converter.textExtractor(pdfCriteria);
             return processResponse();
-
         } catch (ConvertException e) {
             e.printStackTrace();
         }
