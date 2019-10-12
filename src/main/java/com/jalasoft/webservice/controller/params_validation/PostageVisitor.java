@@ -11,6 +11,7 @@
  */
 
 package com.jalasoft.webservice.controller.params_validation;
+import com.jalasoft.webservice.common.FileValidator;
 import com.jalasoft.webservice.error_handler.ParamsInvalidException;
 import static java.lang.Integer.parseInt;
 
@@ -49,13 +50,23 @@ public class PostageVisitor implements Visitor {
         try {
             number = parseInt(intParam.getValue().toString());
         } catch (NumberFormatException n){
-            message = "The " + intParam.getName() + " is and invalid number character: " + intParam.getValue().toString();
+            message = "The " + intParam.getName() + " is and invalid number character: " + intParam.getValue().toString() + "\n";
             validationResult.append(message);
             throw new ParamsInvalidException(message);
         }
 
         if (number < 0){
             message = "The " + intParam.getName() + " must be greater than 0";
+            validationResult.append(message);
+            throw new ParamsInvalidException(message);
+        }
+    }
+
+    @Override
+    public void visit(FileParam fileParam) throws ParamsInvalidException {
+        validateCommonData(fileParam);
+        if (!FileValidator.isValidPDFFile(fileParam.getValue().toString())){
+            message = "The " + fileParam.getName() + " is not a PDF file name: " + fileParam.getValue().toString();
             validationResult.append(message);
             throw new ParamsInvalidException(message);
         }

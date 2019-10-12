@@ -12,22 +12,27 @@
 
 package com.jalasoft.webservice.controller.params_validation;
 
+import com.jalasoft.webservice.common.ResponseBuilder;
+import com.jalasoft.webservice.controller.Response;
 import com.jalasoft.webservice.error_handler.ParamsInvalidException;
+import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 
 public class ValidateParams {
     private ArrayList<Visitable> params;
+    private ResponseEntity responseEntity;
 
     public ValidateParams(){
         params = new ArrayList<Visitable>();
+        this.responseEntity = null;
     }
 
     public void addParam(GenericParam param){
         params.add(param);
     }
 
-    public String validateParams() {
+    public ResponseEntity validateParams() {
         PostageVisitor visitor = new PostageVisitor();
 
         for(Visitable param: params){
@@ -37,8 +42,9 @@ public class ValidateParams {
                 paramIE.printStackTrace();
             }
         }
-        String validationResult = visitor.getValidationResult();
-        return validationResult;
+        return ResponseBuilder.getResponse(visitor.getValidationResult());
+//        String validationResult = visitor.getValidationResult();
+//        return validationResult;
     }
 
     public void addParam(ChecksumParam checksum) {
@@ -47,5 +53,9 @@ public class ValidateParams {
 
     public void addParam(IntParam intParam) {
         params.add(intParam);
+    }
+
+    public void addParam(FileParam fileParam){
+        params.add(fileParam);
     }
 }
