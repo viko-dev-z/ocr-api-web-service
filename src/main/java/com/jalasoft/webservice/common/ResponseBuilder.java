@@ -23,9 +23,9 @@ public class ResponseBuilder {
     private static ResponseEntity responseEntity;
 
     public static ResponseEntity getResponse(String message) {
-        ResponseEntity responseEntity = null;
+        ResponseEntity responseEntity = new ResponseEntity(HttpStatus.PARTIAL_CONTENT);
         if (!message.isEmpty()) {
-            jsonMessage = ResponseBuilder.getJSONResponse(message);
+            jsonMessage = ResponseBuilder.getJSONResponse("400", message);
             responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .header("Content-Type", "application/json; charset=UTF-8")
                     .body(jsonMessage.getJSON());
@@ -33,11 +33,11 @@ public class ResponseBuilder {
         return responseEntity;
     }
 
-    private static IResponse getJSONResponse(String message){
+    private static IResponse getJSONResponse(String code, String message){
         IResponse jsonMessage = null;
         if (!message.isEmpty()) {
             jsonMessage = new ResponseErrorMessage();
-            jsonMessage.setCode("400");
+            jsonMessage.setCode(code);
             jsonMessage.setMessage(message);
         }
         return jsonMessage;
