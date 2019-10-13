@@ -12,36 +12,50 @@
 
 package com.jalasoft.webservice.controller.params_validation;
 
+import com.jalasoft.webservice.common.ResponseBuilder;
+import com.jalasoft.webservice.controller.Response;
 import com.jalasoft.webservice.error_handler.ParamsInvalidException;
+import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 
 public class ValidateParams {
     private ArrayList<Visitable> params;
+    private ResponseEntity responseEntity;
 
     public ValidateParams(){
         params = new ArrayList<Visitable>();
+        this.responseEntity = null;
     }
 
     public void addParam(GenericParam param){
         params.add(param);
     }
 
-    public String validateParams() throws ParamsInvalidException {
+    public ResponseEntity validateParams() {
         PostageVisitor visitor = new PostageVisitor();
 
         for(Visitable param: params){
-            param.accept(visitor);
+            try {
+                param.accept(visitor);
+            } catch (ParamsInvalidException paramIE){
+                paramIE.printStackTrace();
+            }
         }
-        String validationResult = visitor.getValidationResult();
-        return validationResult;
+        return ResponseBuilder.getResponse(visitor.getValidationResult());
+//        String validationResult = visitor.getValidationResult();
+//        return validationResult;
     }
 
     public void addParam(ChecksumParam checksum) {
         params.add(checksum);
     }
 
-    public void addParam(IntParam endPageText) {
-        params.add(endPageText);
+    public void addParam(IntParam intParam) {
+        params.add(intParam);
+    }
+
+    public void addParam(FileParam fileParam){
+        params.add(fileParam);
     }
 }

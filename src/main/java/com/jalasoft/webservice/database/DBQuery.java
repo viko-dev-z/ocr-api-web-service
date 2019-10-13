@@ -12,6 +12,8 @@
 
 package com.jalasoft.webservice.database;
 
+import com.jalasoft.webservice.model.User;
+
 import java.sql.*;
 
 /**
@@ -68,5 +70,40 @@ public class DBQuery {
             e.printStackTrace();
         }
         return path;
+    }
+
+    public User getUser(String user, String password){
+        sqlQuery = "SELECT *" +
+                " FROM " + ConnectionDB.getInstance().USER_TABLE_NAME +
+                " WHERE user= ? AND password= ?";
+                //"Select * FROM "
+                  //  + ConnectionDB.getInstance().USER_TABLE_NAME
+                    //+ " Where user = '" + user + "' and password = '" + password + "'";
+                //+ " Where user='" + user + "' and password='" + password + "'";
+        ResultSet resultSet;
+        User userObject = null;
+        Statement state;
+        try  {
+            PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
+            preparedStatement.setString(1, user);
+            preparedStatement.setString(2, password);
+            boolean executed = preparedStatement.execute();
+            resultSet = preparedStatement.executeQuery();
+            //state = conn.createStatement();
+            //state.executeQuery(sqlQuery);
+            //resultSet = state.getResultSet();
+            while (resultSet.next()){
+                userObject = new User();
+                //userObject.setUser(resultSet.getString("id"));
+                userObject.setUser(resultSet.getString("user"));
+                userObject.setPassword(resultSet.getString("password"));
+                userObject.setRole(resultSet.getString("role"));
+                userObject.setEmail(resultSet.getString("email"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return userObject;
     }
 }

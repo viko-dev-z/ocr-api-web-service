@@ -37,11 +37,6 @@ public class ResponseOkMessage extends Response {
     }
 
     @Override
-    public void setCode(String code) {
-        JSONMessage.put("Status", code );
-    }
-
-    @Override
     public void setMessage(String message) {
         JSONMessage.put("ExtractedMessage", message);
     }

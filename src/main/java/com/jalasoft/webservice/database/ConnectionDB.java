@@ -29,6 +29,7 @@ public class ConnectionDB {
     private static Connection conn;
     // Constant to assign table name
     static final String TABLE_NAME = "fileState";
+    static final String USER_TABLE_NAME = "userTable";
 
     /**
      * Private constructor to prevent direct instantiation.
@@ -60,6 +61,14 @@ public class ConnectionDB {
                     + "( Id integer primary key, " +
                       "Checksum varchar(32), " +
                       "Path varchar (250) );");
+            state = conn.createStatement();
+            state.execute("CREATE TABLE IF NOT EXISTS "
+                    + USER_TABLE_NAME
+                    + "(Id integer PRIMARY KEY UNIQUE NOT NULL, "
+                    + "user TEXT(32) UNIQUE, "
+                    + "password TEXT(16), "
+                    + "role TEXT(16), "
+                    + "email TEXT(32) UNIQUE);");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
