@@ -13,7 +13,6 @@
 package com.jalasoft.webservice.controller.params_validation;
 
 import com.jalasoft.webservice.common.ResponseBuilder;
-import com.jalasoft.webservice.controller.Response;
 import com.jalasoft.webservice.error_handler.ParamsInvalidException;
 import org.springframework.http.ResponseEntity;
 
