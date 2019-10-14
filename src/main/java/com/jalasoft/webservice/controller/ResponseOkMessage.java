@@ -40,4 +40,9 @@ public class ResponseOkMessage extends Response {
     public void setMessage(String message) {
         JSONMessage.put("ExtractedMessage", message);
     }
+
+    @Override
+    public void setDownloadURL(String path) {
+        JSONMessage.put("DownloadURL", path);
+    }
 }

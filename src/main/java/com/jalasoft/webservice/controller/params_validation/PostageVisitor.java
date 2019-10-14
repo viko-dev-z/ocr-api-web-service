@@ -84,10 +84,10 @@ public class PostageVisitor implements Visitor {
             throw new ParamsInvalidException(message);
         }
 
-        if (!theFileChecksum.equals(fileParam.getInputChecksum())){
-            message = "File checksum does not match. ";
-            message.concat("Expected: " + theFileChecksum);
-            message.concat(" - Actual: " + fileParam.getInputChecksum());
+        if (!theFileChecksum.equalsIgnoreCase(fileParam.getInputChecksum())){
+            message = "File checksum does not match. "
+                    + "Expected: " + theFileChecksum
+                    + " - Actual: " + fileParam.getInputChecksum();
             validationResult.append(message);
             throw new ParamsInvalidException(message);
         }

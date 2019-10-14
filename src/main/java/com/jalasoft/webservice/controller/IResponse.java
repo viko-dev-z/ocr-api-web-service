@@ -28,4 +28,7 @@ public interface IResponse {
 
     // abstract method to initialize message JSON property
     void setMessage(String message);
+
+    // abstract method to initialize message JSON property
+    void setDownloadURL(String path);
 }

@@ -40,4 +40,9 @@ public class ResponseErrorMessage extends Response {
     public void setMessage(String message) {
         JSONMessage.put("Message", message);
     }
+
+    @Override
+    public void setDownloadURL(String path) {
+        JSONMessage.put("DownloadURL", path);
+    }
 }

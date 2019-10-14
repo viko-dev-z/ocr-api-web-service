@@ -1,0 +1,30 @@
+Create Intellij IDEA Spring Project 
+ 
+We need to download Intellij IDEA community edition from the official page. 
+(https://www.jetbrains.com/idea/download/#section=windows 
+after it is installed correctly we can create a java gradle project 
+ 
+Steps: 
+ Open Intellij IDEA 
+ Go to File -> New -> Project  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ Verify that the project was created with the following structure and the 
+build was executed without errors 
+ 
+ 
+ 
+ Modify build.gradle file to could work with spring 
+build.gradle build.gradle with spring dependencies 
+ 
+ 
+ 
+ 
+ 
