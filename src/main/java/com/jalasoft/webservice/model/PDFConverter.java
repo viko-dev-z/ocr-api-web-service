@@ -12,14 +12,18 @@
 
 package com.jalasoft.webservice.model;
 
+import com.jalasoft.webservice.common.FileValidator;
 import com.jalasoft.webservice.controller.Response;
 import com.jalasoft.webservice.controller.ResponseOkMessage;
 import com.jalasoft.webservice.error_handler.ConvertException;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 
 public class PDFConverter implements IConverter{
 
@@ -36,7 +40,9 @@ public class PDFConverter implements IConverter{
         jsonMessage.setCode("200");
         try {
             this.textStripper = new PDFTextStripper();
-            jsonMessage.setMessage(textExtractorForPageRange((CriteriaPDF) criteria));
+            String textExtracted = textExtractorForPageRange((CriteriaPDF) criteria);
+            jsonMessage.setMessage(textExtracted);
+            jsonMessage.setDownloadURL(createTxtFile(textExtracted, ((CriteriaPDF) criteria).getDownloadPath()));
         }
         catch (Exception e) {
             throw new ConvertException("message2", e);
@@ -67,10 +73,22 @@ public class PDFConverter implements IConverter{
         catch (Exception e) {
             throw new ConvertException("message", e);
         }
-//        catch (IOException ex) {
-//            throw new ConvertException("message2", ex);
-//
-//        }
         return content.toString();
+    }
+
+    private String createTxtFile(String textExtracted, String downloadPath){
+        String fileName = "";
+        try {
+            fileName = FileValidator.writeToFile(textExtracted, downloadPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        URI downloadLocation = ServletUriComponentsBuilder
+                .fromCurrentServletMapping()
+                .path("/api/v1/file/{fileName}")
+                .build()
+                .expand(fileName)
+                .toUri();
+        return downloadLocation.toString();
     }
 }

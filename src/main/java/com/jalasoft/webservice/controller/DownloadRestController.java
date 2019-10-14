@@ -41,8 +41,6 @@ public class DownloadRestController {
             );
             FileCopyUtils.copy(stream, response.getOutputStream());
         }
-
-
     }
 
 }

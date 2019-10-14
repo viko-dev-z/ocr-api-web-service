@@ -23,6 +23,7 @@ public class CriteriaPDF extends Criteria {
     // lang variable that will be used in all subclasses
     private int startPage=-1;
     private int endPage=-1;
+    private String downloadPath = "";
 
     public CriteriaPDF(){
         super();
@@ -44,4 +45,11 @@ public class CriteriaPDF extends Criteria {
         this.endPage = endPage;
     }
 
+    public String getDownloadPath() {
+        return downloadPath;
+    }
+
+    public void setDownloadPath(String downloadPath) {
+        this.downloadPath = downloadPath;
+    }
 }

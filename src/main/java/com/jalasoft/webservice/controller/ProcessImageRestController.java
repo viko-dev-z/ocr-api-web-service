@@ -17,7 +17,6 @@ import com.jalasoft.webservice.common.FileValidator;
 import com.jalasoft.webservice.error_handler.ConvertException;
 import com.jalasoft.webservice.model.*;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,14 +26,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
-/**
- * Enum to represent a group of constants for supported HTTP Status Code
- */
-enum ResponsesSupported {
-    OK,
-    LANG_UNSUPPORTED,
-    FILE_UNSUPPORTED
-}
 
 /**
  * Implements REST Endpoint to extract Text from Image
@@ -87,7 +78,7 @@ public class ProcessImageRestController extends ProcessAbstractRestController {
                 filePath = propertyFilePath + file.getOriginalFilename();
                 // validate if file is an image.
                 if (! FileValidator.isValidImage(filePath)){
-                    myResponses = ResponsesSupported.FILE_UNSUPPORTED;
+                    responsesSupported = ResponsesSupported.FILE_UNSUPPORTED;
                     return processResponse();
                 }
                 else {
@@ -102,14 +93,14 @@ public class ProcessImageRestController extends ProcessAbstractRestController {
             CriteriaOCR imageCriteria = new CriteriaOCR();
             imageCriteria.setFilePath(filePath);
             if (imageCriteria.isSupportedLanguage(language)){
-                myResponses = ResponsesSupported.OK;
+                responsesSupported = ResponsesSupported.OK;
                 imageCriteria.setLang(language);
                 IConverter converter = new OCRConverter() ;
                 jsonMessage = converter.textExtractor(imageCriteria);
                 return processResponse();
             }
             else {
-                myResponses = ResponsesSupported.LANG_UNSUPPORTED;
+                responsesSupported = ResponsesSupported.LANG_UNSUPPORTED;
                 return processResponse();
             }
 

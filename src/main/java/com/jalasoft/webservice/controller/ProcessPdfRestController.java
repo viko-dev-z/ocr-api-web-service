@@ -67,7 +67,8 @@ public class ProcessPdfRestController extends ProcessAbstractRestController {
             @RequestParam(value = "checksum") String checksum,
             @RequestParam(value = "startPage") String startPageText,
             @RequestParam(value = "endPage") String endPageText,
-            @Value("${imagePath}") String propertyFilePath) {
+            @Value("${imagePath}") String propertyFilePath,
+            @Value("${downloadPath}") String downloadFilePath) {
 
         ValidateParams params = new ValidateParams();
         params.addParam(new ChecksumParam("checksum", checksum));
@@ -90,17 +91,19 @@ public class ProcessPdfRestController extends ProcessAbstractRestController {
             pdfCriteria.setStartPage(parseInt(startPageText));
             pdfCriteria.setEndPage(parseInt(endPageText));
 
+            pdfCriteria.setDownloadPath(downloadFilePath + file.getOriginalFilename() + ".txt");
+
             IConverter converter = new PDFConverter();
 
-            myResponses = ResponsesSupported.OK;
+            responsesSupported = ResponsesSupported.OK;
             jsonMessage = new ResponseOkMessage();
             jsonMessage.setCode("200");
             jsonMessage = converter.textExtractor(pdfCriteria);
+
             return processResponse();
         } catch (ConvertException e) {
             e.printStackTrace();
         }
         return processResponse();
     }
-
 }

@@ -16,9 +16,17 @@ import com.jalasoft.webservice.model.DBManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+/**
+ * Enum to represent a group of constants for supported HTTP Status Code
+ */
+enum ResponsesSupported {
+    OK,
+    LANG_UNSUPPORTED,
+    FILE_UNSUPPORTED
+}
 public class ProcessAbstractRestController {
     DBManager dbm = new DBManager();
-    ResponsesSupported myResponses = ResponsesSupported.OK;
+    ResponsesSupported responsesSupported = ResponsesSupported.OK;
     Response jsonMessage;
 
     /**
@@ -27,7 +35,7 @@ public class ProcessAbstractRestController {
      */
     public ResponseEntity processResponse() {
         ResponseEntity response = null;
-        switch(myResponses) {
+        switch(responsesSupported) {
             case OK:
                 response = ResponseEntity
                         .status(HttpStatus.OK)
