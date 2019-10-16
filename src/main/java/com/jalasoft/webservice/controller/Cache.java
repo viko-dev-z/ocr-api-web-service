@@ -33,4 +33,8 @@ public class Cache {
     public static void addToken(String token){
         tokens.add(token);
     }
+
+    public boolean isValid(String token){
+        return tokens.contains(token);
+    }
 }

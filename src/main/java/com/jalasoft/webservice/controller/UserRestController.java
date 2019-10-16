@@ -15,10 +15,7 @@ package com.jalasoft.webservice.controller;
 import com.jalasoft.webservice.model.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -29,8 +26,8 @@ public class UserRestController extends ProcessAbstractRestController {
     }
 
     @PostMapping ("/login")
-    public String validate(@RequestParam(value = "user") String user, @RequestParam(value = "password") String password) {
-        User userObject = dbm.getUser(user, password);
+    public String validate(@RequestBody User user) {
+        User userObject = dbm.getUser(user.getUser(), user.getPassword());
         if(userObject == null){
             return "Error 401";
         }
@@ -41,6 +38,7 @@ public class UserRestController extends ProcessAbstractRestController {
                                     .claim("role", userObject.getRole())
                                     .claim("email", userObject.getEmail())
                                     .compact();
+        Cache.getInstance().addToken(token);
         return token;
     }
 }

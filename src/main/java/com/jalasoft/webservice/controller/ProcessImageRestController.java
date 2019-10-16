@@ -17,9 +17,12 @@ import com.jalasoft.webservice.common.FileValidator;
 import com.jalasoft.webservice.error_handler.ConvertException;
 import com.jalasoft.webservice.model.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -68,7 +71,23 @@ public class ProcessImageRestController extends ProcessAbstractRestController {
             @RequestParam(value = "language", defaultValue = "eng")
                            String language,
             @RequestParam(value = "checksum") String checksum,
-            @Value("${imagePath}") String propertyFilePath) {
+            @Value("${imagePath}") String propertyFilePath,
+            HttpServletRequest req) {
+
+        String auth = req.getHeader("Authorization");
+        String token = auth.split(" ")[1];
+
+        // needs to go to middleware layer
+        if(!Cache.getInstance().isValid(token)){
+            ResponseEntity responseAuth = null;
+            responseAuth = ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .header("Content-Type")
+                    .body("no auth");
+
+            return responseAuth;
+
+        }
 
         try {
             // we check if there is a file with same checksum
