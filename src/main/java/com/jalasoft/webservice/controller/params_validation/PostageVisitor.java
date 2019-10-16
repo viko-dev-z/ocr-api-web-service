@@ -12,6 +12,7 @@
 
 package com.jalasoft.webservice.controller.params_validation;
 import com.jalasoft.webservice.common.FileValidator;
+import com.jalasoft.webservice.common.StandardValues;
 import com.jalasoft.webservice.error_handler.ParamsInvalidException;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,13 +35,13 @@ public class PostageVisitor implements Visitor {
     @Override
     public void visit(ChecksumParam checksumParam) throws ParamsInvalidException {
         validateCommonData(checksumParam);
-        if (checksumParam.getValue().toString().length() != 32 ){
+        if (checksumParam.getValue().toString().length() != StandardValues.CHECKSUM_SIZE ){
             message = "The " + checksumParam.getName() + " has an invalid length. \n";
             validationResult.append(message);
             throw new ParamsInvalidException(message);
         }
 
-        if (!checksumParam.getValue().toString().matches("-?[0-9a-fA-F]+")){
+        if (!checksumParam.getValue().toString().matches(StandardValues.REGULAR_EXPRESSION_HEX_NUMBERS)){
             message = "The " + checksumParam.getName() + " has an invalid characters: " + checksumParam.getValue().toString() + "\n";
             validationResult.append(message);
             throw new ParamsInvalidException(message);
@@ -50,7 +51,7 @@ public class PostageVisitor implements Visitor {
     @Override
     public void visit(IntParam intParam) throws ParamsInvalidException {
         validateCommonData(intParam);
-        int number = -1;
+        int number = StandardValues.MINUS_ONE;
         try {
             number = parseInt(intParam.getValue().toString());
         } catch (NumberFormatException n){
@@ -59,11 +60,12 @@ public class PostageVisitor implements Visitor {
             throw new ParamsInvalidException(message);
         }
 
-        if (number < 0){
+        if (number < StandardValues.ZERO){
             message = "The " + intParam.getName() + " must be greater than 0";
             validationResult.append(message);
             throw new ParamsInvalidException(message);
         }
+
     }
 
     @Override
@@ -75,7 +77,7 @@ public class PostageVisitor implements Visitor {
             validationResult.append(message);
             throw new ParamsInvalidException(message);
         }
-        String theFileChecksum = "";
+        String theFileChecksum = StandardValues.EMPTY_STRING;
         try {
             theFileChecksum = FileValidator.getFileChecksum(theFile.getInputStream());
         } catch (IOException e) {
@@ -93,7 +95,7 @@ public class PostageVisitor implements Visitor {
         }
     }
 
-    String getValidationResult(){
+    public String getValidationResult(){
         return validationResult.toString();
     }
 
