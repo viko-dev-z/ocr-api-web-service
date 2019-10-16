@@ -42,19 +42,17 @@ public class ValidateParams {
             }
         }
         return ResponseBuilder.getResponse(visitor.getValidationResult());
-//        String validationResult = visitor.getValidationResult();
-//        return validationResult;
     }
 
     public void addParam(ChecksumParam checksum) {
         params.add(checksum);
     }
 
-    public void addParam(IntParam intParam) {
-        params.add(intParam);
-    }
-
     public void addParam(FileParam fileParam){
         params.add(fileParam);
+    }
+
+    public void addParam(IntParam intParam) {
+        params.add(intParam);
     }
 }

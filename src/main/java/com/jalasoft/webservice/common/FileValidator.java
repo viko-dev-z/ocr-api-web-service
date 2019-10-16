@@ -16,7 +16,6 @@ import com.jalasoft.webservice.model.DBManager;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -45,41 +44,19 @@ public final class FileValidator {
      * Returns true if a file is an Image, otherwise returns false.
      */
     public static boolean isValidImage(String filePath) {
-        Path path = new File(filePath).toPath();
-        String mimeType = "";
-        try {
-            mimeType = Files.probeContentType(path);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String type = mimeType.split("/")[0];
-        if (type.equals("image"))
-            return true;
-        else
-            return false;
+        return getMimeType(filePath).contains(StandardValues.MIME_TYPE_IMAGE);
     }
 
     /**
      * Returns true if a file is a PDF file, otherwise returns false.
      */
     public static boolean isValidPDFFile(String filePath) {
-        Path path = new File(filePath).toPath();
-        String mimeType = "";
-        try {
-            mimeType = Files.probeContentType(path);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //String type = mimeType.split("/")[0];
-        if (mimeType.equals("application/pdf"))
-            return true;
-        else
-            return false;
+        return getMimeType(filePath).equals(StandardValues.MIME_TYPE_APPLICATION_PDF);
     }
 
     public static String getMimeType(String filePath) {
         Path path = new File(filePath).toPath();
-        String mimeType = "";
+        String mimeType = StandardValues.EMPTY_STRING;
         try {
             mimeType = Files.probeContentType(path);
         } catch (IOException e) {
@@ -89,15 +66,14 @@ public final class FileValidator {
     }
 
     public static String getFileChecksum(InputStream fileInputStream) {
-        String checksumMD5 = "";
+        String checksumMD5 = StandardValues.EMPTY_STRING;
         MessageDigest md = null;
         try {
-            md = MessageDigest.getInstance("MD5");
+            md = MessageDigest.getInstance(StandardValues.MD5);
             checksumMD5 = checksum(fileInputStream, md);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-
         return checksumMD5;
     }
 
@@ -105,10 +81,10 @@ public final class FileValidator {
 
         // DigestInputStream is better, but you also can hash file like this.
         try {
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[StandardValues.BYTE];
             int nread;
-            while ((nread = fileInputStream.read(buffer)) != -1) {
-                md.update(buffer, 0, nread);
+            while ((nread = fileInputStream.read(buffer)) != StandardValues.MINUS_ONE) {
+                md.update(buffer, StandardValues.ZERO, nread);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -117,7 +93,7 @@ public final class FileValidator {
         // bytes to hex
         StringBuilder result = new StringBuilder();
         for (byte b : md.digest()) {
-            result.append(String.format("%02x", b));
+            result.append(String.format(StandardValues.FORMAT, b));
         }
         return result.toString();
     }
