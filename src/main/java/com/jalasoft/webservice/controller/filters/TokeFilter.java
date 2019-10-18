@@ -31,9 +31,14 @@ public class TokeFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest)request;
-        HttpServletResponse res = (ExpiresFilter.XHttpServletResponse)response;
+        HttpServletResponse res = (HttpServletResponse)response;
+        String url = req.getRequestURL().toString();
 
-        if (Cache.getInstance().isValid(req.getHeader("Authorization"))){
+        String auth = req.getHeader("Authorization");
+        String token = auth.split(" ")[1];
+
+        if (url.contains("/login") || Cache.getInstance().isValid(token)){
+
             chain.doFilter(request, response);
         } else {
             res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Token");

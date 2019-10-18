@@ -74,20 +74,20 @@ public class ProcessImageRestController extends ProcessAbstractRestController {
             @Value("${imagePath}") String propertyFilePath,
             HttpServletRequest req) {
 
-        String auth = req.getHeader("Authorization");
-        String token = auth.split(" ")[1];
+//        String auth = req.getHeader("Authorization");
+//        String token = auth.split(" ")[1];
 
         // needs to go to middleware layer
-        if(!Cache.getInstance().isValid(token)){
-            ResponseEntity responseAuth = null;
-            responseAuth = ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .header("Content-Type")
-                    .body("no auth");
-
-            return responseAuth;
-
-        }
+//        if(!Cache.getInstance().isValid(token)){
+//            ResponseEntity responseAuth = null;
+//            responseAuth = ResponseEntity
+//                    .status(HttpStatus.BAD_REQUEST)
+//                    .header("Content-Type")
+//                    .body("no auth");
+//
+//            return responseAuth;
+//
+//        }
 
         try {
             // we check if there is a file with same checksum
