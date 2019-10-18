@@ -34,11 +34,11 @@ public class TokeFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse)response;
         String url = req.getRequestURL().toString();
 
-        String auth = req.getHeader("Authorization");
-        String token = auth.split(" ")[1];
+        //String auth = req.getHeader("Authorization");
+        //String token = auth.split(" ")[1];
 
-        if (url.contains("/login") || Cache.getInstance().isValid(token)){
-
+        //if (url.contains("/login") || Cache.getInstance().isValid(token)){
+        if (url.contains("/login") || Cache.getInstance().isValid(req.getHeader("Authorization").split(" ")[1])){
             chain.doFilter(request, response);
         } else {
             res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Token");
