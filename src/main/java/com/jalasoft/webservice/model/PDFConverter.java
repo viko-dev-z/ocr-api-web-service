@@ -13,12 +13,14 @@
 package com.jalasoft.webservice.model;
 
 import com.jalasoft.webservice.common.FileValidator;
+import com.jalasoft.webservice.common.ResponseBuilder;
 import com.jalasoft.webservice.controller.Response;
 import com.jalasoft.webservice.controller.ResponseOkMessage;
 import com.jalasoft.webservice.error_handler.ConvertException;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.File;
@@ -30,6 +32,7 @@ public class PDFConverter implements IConverter{
     private PDFTextStripper textStripper;
     private File documentFile;
     private PDDocument document;
+    private String downloadPath;
 
     public PDFConverter() {
     }
@@ -37,16 +40,13 @@ public class PDFConverter implements IConverter{
     @Override
     public Response textExtractor(Criteria criteria) throws ConvertException {
         Response jsonMessage = new ResponseOkMessage();
-        jsonMessage.setCode("200");
-        try {
-            this.textStripper = new PDFTextStripper();
-            String textExtracted = textExtractorForPageRange((CriteriaPDF) criteria);
-            jsonMessage.setMessage(textExtracted);
-            jsonMessage.setDownloadURL(createTxtFile(textExtracted, ((CriteriaPDF) criteria).getDownloadPath()));
-        }
-        catch (Exception e) {
-            throw new ConvertException("message2", e);
-        }
+
+        String textExtracted = textExtractorForPageRange((CriteriaPDF) criteria);
+        createTxtFile(textExtracted, ((CriteriaPDF) criteria).getDownloadPath());
+
+        jsonMessage.setMessage(textExtracted);
+        jsonMessage.setDownloadURL(downloadPath);
+
         return jsonMessage;
     }
 
@@ -54,6 +54,7 @@ public class PDFConverter implements IConverter{
         String pdfFileInText = "";
         StringBuilder content = new StringBuilder();
         try {
+            this.textStripper = new PDFTextStripper();
             documentFile = new File(criteria.getFilePath());
             document = PDDocument.load(documentFile);
             String[] lines;
@@ -76,7 +77,7 @@ public class PDFConverter implements IConverter{
         return content.toString();
     }
 
-    private String createTxtFile(String textExtracted, String downloadPath){
+    private void createTxtFile(String textExtracted, String downloadPath){
         String fileName = "";
         try {
             fileName = FileValidator.writeToFile(textExtracted, downloadPath);
@@ -89,6 +90,6 @@ public class PDFConverter implements IConverter{
                 .build()
                 .expand(fileName)
                 .toUri();
-        return downloadLocation.toString();
+        this.downloadPath = downloadLocation.toString();
     }
 }
