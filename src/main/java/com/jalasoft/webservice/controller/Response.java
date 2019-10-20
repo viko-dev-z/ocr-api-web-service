@@ -29,4 +29,8 @@ public abstract class Response implements IResponse {
     public void setCode(String code) {
         JSONMessage.put(StandardValues.STATUS, code );
     }
+
+    public void setCustomMessage(String key, String value){
+        JSONMessage.put(key, value);
+    }
 }
