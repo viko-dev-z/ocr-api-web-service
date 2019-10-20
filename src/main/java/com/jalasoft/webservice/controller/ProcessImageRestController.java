@@ -76,21 +76,6 @@ public class ProcessImageRestController extends ProcessAbstractRestController {
                            String language,
             @RequestParam(value = "checksum") String checksum) {
 
-//        String auth = req.getHeader("Authorization");
-//        String token = auth.split(" ")[1];
-
-        // needs to go to middleware layer
-//        if(!Cache.getInstance().isValid(token)){
-//            ResponseEntity responseAuth = null;
-//            responseAuth = ResponseEntity
-//                    .status(HttpStatus.BAD_REQUEST)
-//                    .header("Content-Type")
-//                    .body("no auth");
-//
-//            return responseAuth;
-//
-//        }
-
         try {
             // we check if there is a file with same checksum
             String filePath = dbm.getPath(checksum);
