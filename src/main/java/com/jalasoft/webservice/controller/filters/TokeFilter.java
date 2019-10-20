@@ -12,8 +12,10 @@
 
 package com.jalasoft.webservice.controller.filters;
 
+import com.jalasoft.webservice.common.StandardValues;
 import com.jalasoft.webservice.controller.Cache;
 import org.apache.catalina.filters.ExpiresFilter;
+import org.springframework.http.HttpHeaders;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -33,12 +35,8 @@ public class TokeFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest)request;
         HttpServletResponse res = (HttpServletResponse)response;
         String url = req.getRequestURL().toString();
-
-        //String auth = req.getHeader("Authorization");
-        //String token = auth.split(" ")[1];
-
-        //if (url.contains("/login") || Cache.getInstance().isValid(token)){
-        if (url.contains("/login") || Cache.getInstance().isValid(req.getHeader("Authorization").split(" ")[1])){
+        
+        if (url.contains("/login") || Cache.getInstance().isValid(req.getHeader(HttpHeaders.AUTHORIZATION).split(StandardValues.SPACE)[1])){
             chain.doFilter(request, response);
         } else {
             res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Token");
