@@ -19,7 +19,7 @@ import com.jalasoft.webservice.model.DBManager;
  * Enum to represent a group of constants for supported HTTP Status Code
  */
 
-public class ProcessAbstractRestController {
+public abstract class ProcessAbstractRestController {
     DBManager dbm = new DBManager();
     Response jsonMessage;
 }
