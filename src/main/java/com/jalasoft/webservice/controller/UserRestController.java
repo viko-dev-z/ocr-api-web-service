@@ -12,9 +12,12 @@
 
 package com.jalasoft.webservice.controller;
 
+import com.jalasoft.webservice.common.ResponseBuilder;
 import com.jalasoft.webservice.model.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,10 +29,12 @@ public class UserRestController extends ProcessAbstractRestController {
     }
 
     @PostMapping ("/login")
-    public String validate(@RequestBody User user) {
+    public ResponseEntity validate(@RequestBody User user) {
         User userObject = dbm.getUser(user.getUser(), user.getPassword());
         if(userObject == null){
-            return "Error 401";
+            ResponseErrorMessage responseError = new ResponseErrorMessage();
+            responseError.setMessage("Invalid User");
+            return ResponseBuilder.getResponse(HttpStatus.UNAUTHORIZED,responseError);
         }
 
         String key = "dev-fun2";
@@ -39,6 +44,8 @@ public class UserRestController extends ProcessAbstractRestController {
                                     .claim("email", userObject.getEmail())
                                     .compact();
         Cache.getInstance().addToken(token);
-        return token;
+        ResponseOkMessage responseOkMessage = new ResponseOkMessage();
+        responseOkMessage.setCustomMessage("token", token);
+        return ResponseBuilder.getResponse(HttpStatus.OK, responseOkMessage);
     }
 }
