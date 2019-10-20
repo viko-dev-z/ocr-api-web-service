@@ -25,6 +25,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Properties;
+
 import static java.lang.Integer.parseInt;
 
 /**
@@ -39,6 +41,7 @@ import static java.lang.Integer.parseInt;
 public class ProcessPdfRestController extends ProcessAbstractRestController {
 
     public ProcessPdfRestController() {
+        properties = new Properties();
     }
 
     /**
@@ -64,18 +67,20 @@ public class ProcessPdfRestController extends ProcessAbstractRestController {
     @PostMapping
     @ResponseBody
     public ResponseEntity processPDFFile(
-            @RequestParam(value = "file") MultipartFile file,
-            @RequestParam(value = "checksum") String checksum,
-            @RequestParam(value = "startPage") String startPageText,
-            @RequestParam(value = "endPage") String endPageText) {
+            @RequestParam(value = StandardValues.PARAM_FILE) MultipartFile file,
+            @RequestParam(value = StandardValues.PARAM_CHECKSUM) String checksum,
+            @RequestParam(value = StandardValues.PARAM_START_PAGE) String startPageText,
+            @RequestParam(value = StandardValues.PARAM_END_PAGE) String endPageText) {
 
+        // Validate the input params
         ValidateParams params = new ValidateParams();
         params.addParam(new ChecksumParam(checksum));
         params.addParam(new FileParam(file, checksum));
-        params.addParam(new PagesParam(new IntParam("startPageText", startPageText), new IntParam("endPageText", endPageText)));
+        params.addParam(new PagesParam(new IntParam(StandardValues.PARAM_START_PAGE, startPageText),
+                                        new IntParam(StandardValues.PARAM_END_PAGE, endPageText)));
         ResponseEntity result = params.validateParams();
 
-        if (result.getStatusCode().equals(HttpStatus.BAD_REQUEST)) {
+        if (result.getStatusCode().value() >= HttpStatus.BAD_REQUEST.value()) {
             return result;
         }
 
