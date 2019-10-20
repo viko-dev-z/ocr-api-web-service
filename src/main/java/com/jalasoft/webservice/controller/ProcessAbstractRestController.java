@@ -16,6 +16,8 @@ import com.jalasoft.webservice.model.DBManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Properties;
+
 /**
  * Enum to represent a group of constants for supported HTTP Status Code
  */
@@ -28,6 +30,7 @@ public class ProcessAbstractRestController {
     DBManager dbm = new DBManager();
     ResponsesSupported responsesSupported = ResponsesSupported.OK;
     Response jsonMessage;
+    protected Properties properties;
 
     /**
      * Process a Response Body according to Enum value
