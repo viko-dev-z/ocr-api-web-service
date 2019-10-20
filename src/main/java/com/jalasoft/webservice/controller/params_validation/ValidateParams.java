@@ -12,7 +12,6 @@
 
 package com.jalasoft.webservice.controller.params_validation;
 
-import com.jalasoft.webservice.common.ResponseBuilder;
 import com.jalasoft.webservice.error_handler.ParamsInvalidException;
 import org.springframework.http.ResponseEntity;
 
@@ -39,9 +38,10 @@ public class ValidateParams {
                 param.accept(visitor);
             } catch (ParamsInvalidException paramIE){
                 //paramIE.printStackTrace();
+                break;
             }
         }
-        return ResponseBuilder.getResponse(visitor.getValidationResult());
+        return visitor.getValidationResponseEntity();
     }
 
     public void addParam(ChecksumParam checksum) {

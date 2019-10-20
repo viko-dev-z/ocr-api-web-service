@@ -12,6 +12,7 @@
 
 package com.jalasoft.webservice.controller;
 
+import com.jalasoft.webservice.common.StandardValues;
 import org.json.JSONObject;
 
 /**
@@ -26,6 +27,6 @@ public abstract class Response implements IResponse {
     JSONObject JSONMessage;
 
     public void setCode(String code) {
-        JSONMessage.put("Status", code );
+        JSONMessage.put(StandardValues.STATUS, code );
     }
 }
