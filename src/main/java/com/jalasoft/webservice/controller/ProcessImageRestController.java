@@ -14,6 +14,7 @@ package com.jalasoft.webservice.controller;
 
 
 import com.jalasoft.webservice.common.FileValidator;
+import com.jalasoft.webservice.common.StandardValues;
 import com.jalasoft.webservice.error_handler.ConvertException;
 import com.jalasoft.webservice.model.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +28,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Properties;
+
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 
@@ -40,9 +43,10 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 @RequestMapping("/api/v1")
 public class ProcessImageRestController extends ProcessAbstractRestController {
 
-    private String textConverted;
+    Properties properties;
 
     public ProcessImageRestController() {
+        properties = new Properties();
     }
 
     /**
@@ -70,9 +74,7 @@ public class ProcessImageRestController extends ProcessAbstractRestController {
             @RequestParam(value = "file") MultipartFile file,
             @RequestParam(value = "language", defaultValue = "eng")
                            String language,
-            @RequestParam(value = "checksum") String checksum,
-            @Value("${imagePath}") String propertyFilePath,
-            HttpServletRequest req) {
+            @RequestParam(value = "checksum") String checksum) {
 
 //        String auth = req.getHeader("Authorization");
 //        String token = auth.split(" ")[1];
@@ -94,7 +96,7 @@ public class ProcessImageRestController extends ProcessAbstractRestController {
             String filePath = dbm.getPath(checksum);
 
             if (filePath == null){
-                filePath = propertyFilePath + file.getOriginalFilename();
+                filePath = properties.getProperty(StandardValues.PROPERTY_FILE_PATH) + file.getOriginalFilename();
                 // validate if file is an image.
                 if (! FileValidator.isValidImage(filePath)){
                     responsesSupported = ResponsesSupported.FILE_UNSUPPORTED;
