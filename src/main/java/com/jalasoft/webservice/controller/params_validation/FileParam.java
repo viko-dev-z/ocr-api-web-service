@@ -17,12 +17,14 @@ import com.jalasoft.webservice.error_handler.ParamsInvalidException;
 import org.springframework.web.multipart.MultipartFile;
 
 public class FileParam extends AbstractParam {
-    String inputChecksum;
+    private String inputChecksum;
+    private String type;
 
-    public FileParam(MultipartFile value, String inputChecksum){
+    public FileParam(MultipartFile value, String inputChecksum, String type){
         setName(StandardValues.FILE_NAME);
         setValue(value);
         this.inputChecksum = inputChecksum;
+        this.type = type;
     }
 
     public void accept(Visitor visitor) throws ParamsInvalidException {
@@ -31,5 +33,9 @@ public class FileParam extends AbstractParam {
 
     public String getInputChecksum() {
         return this.inputChecksum;
+    }
+
+    public String getType() {
+        return this.type;
     }
 }

@@ -75,7 +75,7 @@ public class ProcessPdfRestController extends ProcessAbstractRestController {
         // Validate the input params
         ValidateParams params = new ValidateParams();
         params.addParam(new ChecksumParam(checksum));
-        params.addParam(new FileParam(file, checksum));
+        params.addParam(new FileParam(file, checksum, StandardValues.PDF_FILE_EXTENSION));
         params.addParam(new PagesParam(new IntParam(StandardValues.PARAM_START_PAGE, startPageText),
                                         new IntParam(StandardValues.PARAM_END_PAGE, endPageText)));
         ResponseEntity result = params.validateParams();
