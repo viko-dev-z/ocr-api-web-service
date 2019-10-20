@@ -29,6 +29,7 @@ public final class StandardValues {
     public static final String JSON_TAG_TIMESTAMP = "Timestamp";
     public static final String LANGUAGE = "language";
     public static final String PDF_FILE_EXTENSION = "pdf";
+    public static final String SPACE = " ";
     static final String MIME_TYPE_APPLICATION_PDF = "application/pdf";
     static final String MD5 = "MD5";
     static final String FORMAT = "%02x";
