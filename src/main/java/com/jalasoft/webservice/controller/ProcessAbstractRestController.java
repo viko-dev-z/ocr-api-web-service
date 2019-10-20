@@ -30,7 +30,6 @@ public class ProcessAbstractRestController {
     DBManager dbm = new DBManager();
     ResponsesSupported responsesSupported = ResponsesSupported.OK;
     Response jsonMessage;
-    protected Properties properties;
 
     /**
      * Process a Response Body according to Enum value
