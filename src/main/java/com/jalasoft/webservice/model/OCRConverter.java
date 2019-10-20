@@ -42,7 +42,6 @@ public class OCRConverter implements IConverter {
     @Override
     public Response textExtractor(Criteria criteria) throws ConvertException {
         Response jsonMessage = new ResponseOkMessage();
-        jsonMessage.setCode("200");
         try {
         jsonMessage.setMessage(textExtractorForSupportedLanguages((CriteriaOCR) criteria));
         }
