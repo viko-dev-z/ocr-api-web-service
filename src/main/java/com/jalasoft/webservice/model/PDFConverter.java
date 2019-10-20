@@ -14,6 +14,7 @@ package com.jalasoft.webservice.model;
 
 import com.jalasoft.webservice.common.FileValidator;
 import com.jalasoft.webservice.common.ResponseBuilder;
+import com.jalasoft.webservice.common.StandardValues;
 import com.jalasoft.webservice.controller.Response;
 import com.jalasoft.webservice.controller.ResponseOkMessage;
 import com.jalasoft.webservice.error_handler.ConvertException;
@@ -51,7 +52,7 @@ public class PDFConverter implements IConverter{
     }
 
     private String textExtractorForPageRange(CriteriaPDF criteria) throws ConvertException {
-        String pdfFileInText = "";
+        String pdfFileInText = StandardValues.EMPTY_STRING;
         StringBuilder content = new StringBuilder();
         try {
             this.textStripper = new PDFTextStripper();
