@@ -12,6 +12,9 @@
 
 package com.jalasoft.webservice.common;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public final class StandardValues {
     public static final String EMPTY_STRING = "";
     public static final String MIME_TYPE_IMAGE = "image";
@@ -24,6 +27,8 @@ public final class StandardValues {
     public static final String JSON_TAG_DOWNLOAD_URL = "DownloadURL";
     public static final String JSON_TAG_MESSAGE = "Message";
     public static final String JSON_TAG_TIMESTAMP = "Timestamp";
+    public static final String LANGUAGE = "language";
+    public static final String PDF_FILE_EXTENSION = "pdf";
     static final String MIME_TYPE_APPLICATION_PDF = "application/pdf";
     static final String MD5 = "MD5";
     static final String FORMAT = "%02x";
@@ -38,4 +43,6 @@ public final class StandardValues {
     public static final String PARAM_END_PAGE = "endPage";
 
     public static final String STATUS = "Status";
+
+    public static final ArrayList<String> SUPPORTED_LANGUAGE = new ArrayList<String>(Arrays.asList("eng", "spa"));
 }
