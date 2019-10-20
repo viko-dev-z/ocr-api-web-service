@@ -54,6 +54,16 @@ public final class FileValidator {
         return getMimeType(filePath).equals(StandardValues.MIME_TYPE_APPLICATION_PDF);
     }
 
+    /**
+     * Return true if file type is in the mime type otherwise false.
+     * @param filePath path of the file.
+     * @param fileType the file type
+     * @return boolean value
+     */
+    public static boolean isValidFile(String filePath, String fileType) {
+        return getMimeType(filePath).contains(fileType);
+    }
+
     public static String getMimeType(String filePath) {
         Path path = new File(filePath).toPath();
         String mimeType = StandardValues.EMPTY_STRING;
