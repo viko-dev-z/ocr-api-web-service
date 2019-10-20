@@ -13,6 +13,7 @@
 package com.jalasoft.webservice.controller;
 
 import com.jalasoft.webservice.common.FileValidator;
+import com.jalasoft.webservice.common.ResponseBuilder;
 import com.jalasoft.webservice.common.StandardValues;
 import com.jalasoft.webservice.controller.params_validation.*;
 import com.jalasoft.webservice.error_handler.ConvertException;
@@ -41,7 +42,6 @@ import static java.lang.Integer.parseInt;
 public class ProcessPdfRestController extends ProcessAbstractRestController {
 
     public ProcessPdfRestController() {
-        properties = new Properties();
     }
 
     /**
@@ -85,28 +85,23 @@ public class ProcessPdfRestController extends ProcessAbstractRestController {
         }
 
         // Add the file to the temp folder and to the database if not exists
-        FileValidator.processFile(properties.getProperty(StandardValues.PROPERTY_FILE_PATH), file, dbm, checksum);
+        FileValidator.processFile(StandardValues.PROPERTY_FILE_PATH, file, dbm, checksum);
 
+        // Set the pdfCriteria with the validated input dat
+        CriteriaPDF pdfCriteria = new CriteriaPDF();
+        pdfCriteria.setFilePath(dbm.getPath(checksum));
+        pdfCriteria.setStartPage(parseInt(startPageText));
+        pdfCriteria.setEndPage(parseInt(endPageText));
+        pdfCriteria.setDownloadPath(StandardValues.PROPERTY_DOWNLOAD_FILE_PATH + file.getOriginalFilename() + ".txt");
+
+        // Extracting Text from PDF by using PdfBox and Criteria
+        IConverter converter = new PDFConverter();
         try {
-            // Extracting Text from PDF by using PdfBox and Criteria
-            CriteriaPDF pdfCriteria = new CriteriaPDF();
-            pdfCriteria.setFilePath(dbm.getPath(checksum));
-            pdfCriteria.setStartPage(parseInt(startPageText));
-            pdfCriteria.setEndPage(parseInt(endPageText));
-
-            pdfCriteria.setDownloadPath(properties.getProperty(StandardValues.PROPERTY_DOWNLOAD_FILE_PATH) + file.getOriginalFilename() + ".txt");
-
-            IConverter converter = new PDFConverter();
-
-            responsesSupported = ResponsesSupported.OK;
-            jsonMessage = new ResponseOkMessage();
-            jsonMessage.setCode("200");
             jsonMessage = converter.textExtractor(pdfCriteria);
-
-            return processResponse();
         } catch (ConvertException e) {
             e.printStackTrace();
         }
-        return processResponse();
+
+        return ResponseBuilder.getResponse(HttpStatus.OK, jsonMessage);
     }
 }
