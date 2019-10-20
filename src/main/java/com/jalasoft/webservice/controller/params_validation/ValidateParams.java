@@ -26,10 +26,6 @@ public class ValidateParams {
         this.responseEntity = null;
     }
 
-    public void addParam(GenericParam param){
-        params.add(param);
-    }
-
     public ResponseEntity validateParams() {
         PostageVisitor visitor = new PostageVisitor();
 
@@ -44,19 +40,9 @@ public class ValidateParams {
         return visitor.getValidationResponseEntity();
     }
 
-    public void addParam(ChecksumParam checksum) {
-        params.add(checksum);
-    }
-
-    public void addParam(FileParam fileParam){
-        params.add(fileParam);
-    }
-
-    public void addParam(IntParam intParam) {
-        params.add(intParam);
-    }
-
     public void addParam(PagesParam pagesParam) {
         params.add(pagesParam);
     }
+
+    public void addParam(AbstractParam languageParam) { params.add(languageParam); }
 }

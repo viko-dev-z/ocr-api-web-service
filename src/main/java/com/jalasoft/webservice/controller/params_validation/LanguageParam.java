@@ -12,13 +12,16 @@
 
 package com.jalasoft.webservice.controller.params_validation;
 
+import com.jalasoft.webservice.common.StandardValues;
 import com.jalasoft.webservice.error_handler.ParamsInvalidException;
 
-public interface Visitor {
-    void visit (GenericParam param) throws ParamsInvalidException;
-    void visit(ChecksumParam param) throws ParamsInvalidException;
-    void visit(IntParam intParam) throws ParamsInvalidException;
-    void visit(FileParam file) throws ParamsInvalidException;
-    void visit(IntParam startPage, IntParam endPage) throws ParamsInvalidException;
-    void visit(LanguageParam languageParam) throws ParamsInvalidException;
+public class LanguageParam extends AbstractParam {
+    public LanguageParam(Object value){
+        setName(StandardValues.LANGUAGE);
+        setValue(value);
+    }
+
+    public void accept(Visitor visitor) throws ParamsInvalidException {
+        visitor.visit(this);
+    }
 }

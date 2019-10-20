@@ -82,8 +82,8 @@ public class PostageVisitor implements Visitor {
     public void visit(FileParam fileParam) throws ParamsInvalidException {
         validateCommonData(fileParam);
         MultipartFile theFile = (MultipartFile)fileParam.getValue();
-        if (!FileValidator.isValidPDFFile(theFile.getOriginalFilename())){
-            message = "The " + fileParam.getName() + " is not a PDF file " + fileParam.getValue().toString();
+        if (!FileValidator.isValidFile(theFile.getOriginalFilename(), fileParam.getType())){
+            message = "The " + fileParam.getName() + " is not a " + fileParam.getType() + " file " + fileParam.getValue().toString();
             responseErrorMessage.setMessage(message);
             validationResponseEntity = ResponseBuilder.getResponse(HttpStatus.BAD_REQUEST, responseErrorMessage);
             throw new ParamsInvalidException(message);
@@ -117,6 +117,17 @@ public class PostageVisitor implements Visitor {
 
         if (startP > endP) {
             message = "The " + startPage.getName() + " must be less than the " + endPage.getName();
+            responseErrorMessage.setMessage(message);
+            validationResponseEntity = ResponseBuilder.getResponse(HttpStatus.BAD_REQUEST, responseErrorMessage);
+            throw  new ParamsInvalidException(message);
+        }
+    }
+
+    @Override
+    public void visit(LanguageParam languageParam) throws ParamsInvalidException {
+        validateCommonData(languageParam);
+        if (!StandardValues.SUPPORTED_LANGUAGE.contains(languageParam.getValue())){
+            message = "The " + languageParam.getName() + ": " + languageParam.getValue() + " is not supported";
             responseErrorMessage.setMessage(message);
             validationResponseEntity = ResponseBuilder.getResponse(HttpStatus.BAD_REQUEST, responseErrorMessage);
             throw  new ParamsInvalidException(message);
