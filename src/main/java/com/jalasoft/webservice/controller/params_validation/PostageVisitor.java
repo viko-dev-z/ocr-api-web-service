@@ -14,6 +14,7 @@ package com.jalasoft.webservice.controller.params_validation;
 import com.jalasoft.webservice.common.FileValidator;
 import com.jalasoft.webservice.common.ResponseBuilder;
 import com.jalasoft.webservice.common.StandardValues;
+import com.jalasoft.webservice.controller.ResponseErrorMessage;
 import com.jalasoft.webservice.error_handler.ParamsInvalidException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +26,12 @@ import static java.lang.Integer.parseInt;
 
 public class PostageVisitor implements Visitor {
     private String message;
+    private ResponseErrorMessage responseErrorMessage;
     private ResponseEntity validationResponseEntity;
 
     public PostageVisitor(){
         validationResponseEntity = ResponseEntity.status(HttpStatus.ACCEPTED).body("Accepted");
+        responseErrorMessage = new ResponseErrorMessage();
     }
 
     public void visit(GenericParam param) throws ParamsInvalidException {
@@ -40,13 +43,15 @@ public class PostageVisitor implements Visitor {
         validateCommonData(checksumParam);
         if (checksumParam.getValue().toString().length() != StandardValues.CHECKSUM_SIZE ){
             message = "The " + checksumParam.getName() + " has an invalid length.";
-            validationResponseEntity = ResponseBuilder.getResponse(HttpStatus.BAD_REQUEST, message);
+            responseErrorMessage.setMessage(message);
+            validationResponseEntity = ResponseBuilder.getResponse(HttpStatus.BAD_REQUEST, responseErrorMessage);
             throw new ParamsInvalidException(message);
         }
 
         if (!checksumParam.getValue().toString().matches(StandardValues.REGULAR_EXPRESSION_HEX_NUMBERS)){
             message = "The " + checksumParam.getName() + " has an invalid characters: " + checksumParam.getValue().toString();
-            validationResponseEntity = ResponseBuilder.getResponse(HttpStatus.BAD_REQUEST, message);
+            responseErrorMessage.setMessage(message);
+            validationResponseEntity = ResponseBuilder.getResponse(HttpStatus.BAD_REQUEST, responseErrorMessage);
             throw new ParamsInvalidException(message);
         }
     }
@@ -59,13 +64,15 @@ public class PostageVisitor implements Visitor {
             number = parseInt(intParam.getValue().toString());
         } catch (NumberFormatException n){
             message = "The " + intParam.getName() + " is and invalid number character: " + intParam.getValue().toString();
-            validationResponseEntity = ResponseBuilder.getResponse(HttpStatus.BAD_REQUEST, message);
+            responseErrorMessage.setMessage(message);
+            validationResponseEntity = ResponseBuilder.getResponse(HttpStatus.BAD_REQUEST, responseErrorMessage);
             throw new ParamsInvalidException(message);
         }
 
         if (number <= StandardValues.ZERO){
             message = "The " + intParam.getName() + " must be greater than 0";
-            validationResponseEntity = ResponseBuilder.getResponse(HttpStatus.BAD_REQUEST, message);
+            responseErrorMessage.setMessage(message);
+            validationResponseEntity = ResponseBuilder.getResponse(HttpStatus.BAD_REQUEST, responseErrorMessage);
             throw new ParamsInvalidException(message);
         }
 
@@ -76,8 +83,9 @@ public class PostageVisitor implements Visitor {
         validateCommonData(fileParam);
         MultipartFile theFile = (MultipartFile)fileParam.getValue();
         if (!FileValidator.isValidPDFFile(theFile.getOriginalFilename())){
-            message = "The " + fileParam.getName() + " is not a PDF file name: " + fileParam.getValue().toString();
-            validationResponseEntity = ResponseBuilder.getResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE, message);
+            message = "The " + fileParam.getName() + " is not a PDF file " + fileParam.getValue().toString();
+            responseErrorMessage.setMessage(message);
+            validationResponseEntity = ResponseBuilder.getResponse(HttpStatus.BAD_REQUEST, responseErrorMessage);
             throw new ParamsInvalidException(message);
         }
         String theFileChecksum = StandardValues.EMPTY_STRING;
@@ -85,7 +93,8 @@ public class PostageVisitor implements Visitor {
             theFileChecksum = FileValidator.getFileChecksum(theFile.getInputStream());
         } catch (IOException e) {
             message = "Error to generate the file checksum";
-            validationResponseEntity = ResponseBuilder.getResponse(HttpStatus.BAD_REQUEST, message);
+            responseErrorMessage.setMessage(message);
+            validationResponseEntity = ResponseBuilder.getResponse(HttpStatus.BAD_REQUEST, responseErrorMessage);
             throw new ParamsInvalidException(message);
         }
 
@@ -93,7 +102,8 @@ public class PostageVisitor implements Visitor {
             message = "File checksum does not match. "
                     + "Expected: " + theFileChecksum
                     + " - Actual: " + fileParam.getInputChecksum();
-            validationResponseEntity = ResponseBuilder.getResponse(HttpStatus.BAD_REQUEST, message);
+            responseErrorMessage.setMessage(message);
+            validationResponseEntity = ResponseBuilder.getResponse(HttpStatus.BAD_REQUEST, responseErrorMessage);
             throw new ParamsInvalidException(message);
         }
     }
@@ -107,7 +117,8 @@ public class PostageVisitor implements Visitor {
 
         if (startP > endP) {
             message = "The " + startPage.getName() + " must be less than the " + endPage.getName();
-            validationResponseEntity = ResponseBuilder.getResponse(HttpStatus.BAD_REQUEST, message);
+            responseErrorMessage.setMessage(message);
+            validationResponseEntity = ResponseBuilder.getResponse(HttpStatus.BAD_REQUEST, responseErrorMessage);
             throw  new ParamsInvalidException(message);
         }
     }
@@ -119,12 +130,14 @@ public class PostageVisitor implements Visitor {
     private void validateCommonData(AbstractParam common) throws ParamsInvalidException {
         if (common.getValue().toString().isEmpty()){
             message = "The " + common.getName() + " is empty";
-            validationResponseEntity = ResponseBuilder.getResponse(HttpStatus.BAD_REQUEST, message);
+            responseErrorMessage.setMessage(message);
+            validationResponseEntity = ResponseBuilder.getResponse(HttpStatus.BAD_REQUEST, responseErrorMessage);
             throw new ParamsInvalidException(message);
         }
         if (common.getValue() == null){
             message = "The " + common.getName() + " is null";
-            validationResponseEntity = ResponseBuilder.getResponse(HttpStatus.BAD_REQUEST, message);
+            responseErrorMessage.setMessage(message);
+            validationResponseEntity = ResponseBuilder.getResponse(HttpStatus.BAD_REQUEST, responseErrorMessage);
             throw new ParamsInvalidException(message);
         }
     }
