@@ -14,10 +14,16 @@ package com.jalasoft.webservice.controller.params_validation;
 
 import com.jalasoft.webservice.error_handler.ParamsInvalidException;
 
-public interface Visitor {
-    void visit (GenericParam param) throws ParamsInvalidException;
-    void visit(ChecksumParam param) throws ParamsInvalidException;
-    void visit(IntParam intParam) throws ParamsInvalidException;
-    void visit(FileParam file) throws ParamsInvalidException;
-    void visit(IntParam startPage, IntParam endPage) throws ParamsInvalidException;
+public class PagesParam extends AbstractParam {
+    private IntParam startPage;
+    private IntParam endPage;
+
+    public PagesParam(IntParam start, IntParam end){
+        this.startPage = start;
+        this.endPage = end;
+    }
+
+    public void accept(Visitor visitor) throws ParamsInvalidException {
+        visitor.visit(startPage, endPage);
+    }
 }

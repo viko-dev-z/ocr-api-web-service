@@ -38,7 +38,7 @@ public class ValidateParams {
             try {
                 param.accept(visitor);
             } catch (ParamsInvalidException paramIE){
-                paramIE.printStackTrace();
+                //paramIE.printStackTrace();
             }
         }
         return ResponseBuilder.getResponse(visitor.getValidationResult());
@@ -54,5 +54,9 @@ public class ValidateParams {
 
     public void addParam(IntParam intParam) {
         params.add(intParam);
+    }
+
+    public void addParam(PagesParam pagesParam) {
+        params.add(pagesParam);
     }
 }

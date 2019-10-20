@@ -60,7 +60,7 @@ public class PostageVisitor implements Visitor {
             throw new ParamsInvalidException(message);
         }
 
-        if (number < StandardValues.ZERO){
+        if (number <= StandardValues.ZERO){
             message = "The " + intParam.getName() + " must be greater than 0";
             validationResult.append(message);
             throw new ParamsInvalidException(message);
@@ -92,6 +92,20 @@ public class PostageVisitor implements Visitor {
                     + " - Actual: " + fileParam.getInputChecksum();
             validationResult.append(message);
             throw new ParamsInvalidException(message);
+        }
+    }
+
+    @Override
+    public void visit(IntParam startPage, IntParam endPage) throws ParamsInvalidException {
+        visit(startPage);
+        visit(endPage);
+        int startP = parseInt(startPage.getValue().toString());
+        int endP = parseInt(endPage.getValue().toString());
+
+        if (startP > endP) {
+            message = "The " + startPage.getName() + " must be less than the " + endPage.getName();
+            validationResult.append(message);
+            throw  new ParamsInvalidException(message);
         }
     }
 

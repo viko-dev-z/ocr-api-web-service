@@ -13,6 +13,7 @@
 package com.jalasoft.webservice.controller;
 
 import com.jalasoft.webservice.common.FileValidator;
+import com.jalasoft.webservice.common.StandardValues;
 import com.jalasoft.webservice.controller.params_validation.*;
 import com.jalasoft.webservice.error_handler.ConvertException;
 import com.jalasoft.webservice.model.*;
@@ -66,15 +67,12 @@ public class ProcessPdfRestController extends ProcessAbstractRestController {
             @RequestParam(value = "file") MultipartFile file,
             @RequestParam(value = "checksum") String checksum,
             @RequestParam(value = "startPage") String startPageText,
-            @RequestParam(value = "endPage") String endPageText,
-            @Value("${imagePath}") String propertyFilePath,
-            @Value("${downloadPath}") String downloadFilePath) {
+            @RequestParam(value = "endPage") String endPageText) {
 
         ValidateParams params = new ValidateParams();
         params.addParam(new ChecksumParam(checksum));
         params.addParam(new FileParam(file, checksum));
-        params.addParam(new IntParam("startPageText", startPageText));
-        params.addParam(new IntParam("endPageText", endPageText));
+        params.addParam(new PagesParam(new IntParam("startPageText", startPageText), new IntParam("endPageText", endPageText)));
         ResponseEntity result = params.validateParams();
 
         if (result.getStatusCode().equals(HttpStatus.BAD_REQUEST)) {
@@ -82,7 +80,7 @@ public class ProcessPdfRestController extends ProcessAbstractRestController {
         }
 
         // Add the file to the temp folder and to the database if not exists
-        FileValidator.processFile(propertyFilePath, file, dbm, checksum);
+        FileValidator.processFile(properties.getProperty(StandardValues.PROPERTY_FILE_PATH), file, dbm, checksum);
 
         try {
             // Extracting Text from PDF by using PdfBox and Criteria
@@ -91,7 +89,7 @@ public class ProcessPdfRestController extends ProcessAbstractRestController {
             pdfCriteria.setStartPage(parseInt(startPageText));
             pdfCriteria.setEndPage(parseInt(endPageText));
 
-            pdfCriteria.setDownloadPath(downloadFilePath + file.getOriginalFilename() + ".txt");
+            pdfCriteria.setDownloadPath(properties.getProperty(StandardValues.PROPERTY_DOWNLOAD_FILE_PATH) + file.getOriginalFilename() + ".txt");
 
             IConverter converter = new PDFConverter();
 

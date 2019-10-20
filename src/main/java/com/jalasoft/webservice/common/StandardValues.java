@@ -17,6 +17,7 @@ public final class StandardValues {
     public static final String MIME_TYPE_IMAGE = "image";
     public static final String REGULAR_EXPRESSION_HEX_NUMBERS = "-?[0-9a-fA-F]+";
     public static final String PROPERTY_FILE_PATH = "imagePath";
+    public static final String PROPERTY_DOWNLOAD_FILE_PATH = "downloadFilePath";
     public static final String CHECKSUM_NAME = "checksum";
     public static final String FILE_NAME = "file";
     static final String MIME_TYPE_APPLICATION_PDF = "application/pdf";
