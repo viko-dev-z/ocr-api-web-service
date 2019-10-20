@@ -14,7 +14,9 @@ package com.jalasoft.webservice.controller;
 
 
 import com.jalasoft.webservice.common.FileValidator;
+import com.jalasoft.webservice.common.ResponseBuilder;
 import com.jalasoft.webservice.common.StandardValues;
+import com.jalasoft.webservice.controller.params_validation.*;
 import com.jalasoft.webservice.error_handler.ConvertException;
 import com.jalasoft.webservice.model.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,10 +45,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 @RequestMapping("/api/v1")
 public class ProcessImageRestController extends ProcessAbstractRestController {
 
-    Properties properties;
-
     public ProcessImageRestController() {
-        properties = new Properties();
     }
 
     /**
@@ -71,51 +70,37 @@ public class ProcessImageRestController extends ProcessAbstractRestController {
     @PostMapping
     @ResponseBody
     public ResponseEntity processImage(
-            @RequestParam(value = "file") MultipartFile file,
-            @RequestParam(value = "language", defaultValue = "eng")
-                           String language,
-            @RequestParam(value = "checksum") String checksum) {
+            @RequestParam(value = StandardValues.FILE_NAME) MultipartFile file,
+            @RequestParam(value = StandardValues.LANGUAGE) String language,
+            @RequestParam(value = StandardValues.CHECKSUM_NAME) String checksum) {
+
+        // Validate the input params
+        ValidateParams validateParams = new ValidateParams();
+        validateParams.addParam(new FileParam(file, checksum, StandardValues.MIME_TYPE_IMAGE));
+        validateParams.addParam(new LanguageParam(language));
+        validateParams.addParam(new ChecksumParam(checksum));
+
+        ResponseEntity result = validateParams.validateParams();
+
+        if (result.getStatusCode().value() >= HttpStatus.BAD_REQUEST.value()) {
+            return result;
+        }
+
+        // Add the file to the temp folder and to the database if not exists
+        FileValidator.processFile(StandardValues.PROPERTY_FILE_PATH, file, dbm, checksum);
+        String filePath = StandardValues.PROPERTY_FILE_PATH + file.getOriginalFilename();
+        CriteriaOCR imageCriteria = new CriteriaOCR();
+        imageCriteria.setFilePath(filePath);
+        imageCriteria.setLang(language);
 
         try {
-            // we check if there is a file with same checksum
-            String filePath = dbm.getPath(checksum);
-
-            if (filePath == null){
-                filePath = properties.getProperty(StandardValues.PROPERTY_FILE_PATH) + file.getOriginalFilename();
-                // validate if file is an image.
-                if (! FileValidator.isValidImage(filePath)){
-                    responsesSupported = ResponsesSupported.FILE_UNSUPPORTED;
-                    return processResponse();
-                }
-                else {
-                    // file is saved in path of application.properties
-                    dbm.addFile(checksum, filePath);
-                    Path location = Paths.get(filePath);
-                    Files.copy(file.getInputStream(), location,
-                            REPLACE_EXISTING);
-                }
-            }
             // Extracting Text from Image by using Tess4j and Criteria
-            CriteriaOCR imageCriteria = new CriteriaOCR();
-            imageCriteria.setFilePath(filePath);
-            if (imageCriteria.isSupportedLanguage(language)){
-                responsesSupported = ResponsesSupported.OK;
-                imageCriteria.setLang(language);
-                IConverter converter = new OCRConverter() ;
-                jsonMessage = converter.textExtractor(imageCriteria);
-                return processResponse();
-            }
-            else {
-                responsesSupported = ResponsesSupported.LANG_UNSUPPORTED;
-                return processResponse();
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            IConverter converter = new OCRConverter() ;
+            jsonMessage = converter.textExtractor(imageCriteria);
         } catch (ConvertException e) {
             e.printStackTrace();
         }
-        return processResponse();
-    }
 
+        return ResponseBuilder.getResponse(HttpStatus.OK, jsonMessage);
+    }
 }
