@@ -16,8 +16,8 @@ public final class StandardValues {
     public static final String EMPTY_STRING = "";
     public static final String MIME_TYPE_IMAGE = "image";
     public static final String REGULAR_EXPRESSION_HEX_NUMBERS = "-?[0-9a-fA-F]+";
-    public static final String PROPERTY_FILE_PATH = "imagePath";
-    public static final String PROPERTY_DOWNLOAD_FILE_PATH = "downloadFilePath";
+    public static final String PROPERTY_FILE_PATH = "./temp/";
+    public static final String PROPERTY_DOWNLOAD_FILE_PATH = "./public/";
     public static final String CHECKSUM_NAME = "checksum";
     public static final String FILE_NAME = "file";
     public static final String JSON_TAG_EXTRACTED_MESSAGE = "ExtractedMessage";
