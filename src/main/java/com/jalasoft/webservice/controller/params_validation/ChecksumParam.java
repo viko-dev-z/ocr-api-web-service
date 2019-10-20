@@ -12,12 +12,13 @@
 
 package com.jalasoft.webservice.controller.params_validation;
 
+import com.jalasoft.webservice.common.StandardValues;
 import com.jalasoft.webservice.error_handler.ParamsInvalidException;
 
 public class ChecksumParam extends AbstractParam  {
 
-    public ChecksumParam(String name, Object value){
-        setName(name);
+    public ChecksumParam(Object value){
+        setName(StandardValues.CHECKSUM_NAME);
         setValue(value);
     }
 

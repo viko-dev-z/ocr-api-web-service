@@ -12,14 +12,15 @@
 
 package com.jalasoft.webservice.controller.params_validation;
 
+import com.jalasoft.webservice.common.StandardValues;
 import com.jalasoft.webservice.error_handler.ParamsInvalidException;
 import org.springframework.web.multipart.MultipartFile;
 
 public class FileParam extends AbstractParam {
     String inputChecksum;
 
-    public FileParam(String name, MultipartFile value, String inputChecksum){
-        setName(name);
+    public FileParam(MultipartFile value, String inputChecksum){
+        setName(StandardValues.FILE_NAME);
         setValue(value);
         this.inputChecksum = inputChecksum;
     }

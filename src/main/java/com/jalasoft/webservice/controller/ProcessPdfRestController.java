@@ -71,8 +71,8 @@ public class ProcessPdfRestController extends ProcessAbstractRestController {
             @Value("${downloadPath}") String downloadFilePath) {
 
         ValidateParams params = new ValidateParams();
-        params.addParam(new ChecksumParam("checksum", checksum));
-        params.addParam(new FileParam("file", file, checksum));
+        params.addParam(new ChecksumParam(checksum));
+        params.addParam(new FileParam(file, checksum));
         params.addParam(new IntParam("startPageText", startPageText));
         params.addParam(new IntParam("endPageText", endPageText));
         ResponseEntity result = params.validateParams();
