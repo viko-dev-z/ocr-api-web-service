@@ -12,7 +12,10 @@
 
 package com.jalasoft.webservice.controller;
 
+import com.jalasoft.webservice.common.StandardValues;
 import org.json.JSONObject;
+
+import java.sql.Timestamp;
 
 /**
  * Subclass that implements methods from IResponse interface
@@ -29,6 +32,7 @@ public class ResponseOkMessage extends Response {
      */
     public ResponseOkMessage() {
         this.JSONMessage = new JSONObject();
+        this.JSONMessage.put(StandardValues.JSON_TAG_TIMESTAMP, new Timestamp(System.currentTimeMillis()));
     }
 
     @Override
@@ -38,11 +42,11 @@ public class ResponseOkMessage extends Response {
 
     @Override
     public void setMessage(String message) {
-        JSONMessage.put("ExtractedMessage", message);
+        JSONMessage.put(StandardValues.JSON_TAG_EXTRACTED_MESSAGE, message);
     }
 
     @Override
     public void setDownloadURL(String path) {
-        JSONMessage.put("DownloadURL", path);
+        JSONMessage.put(StandardValues.JSON_TAG_DOWNLOAD_URL, path);
     }
 }

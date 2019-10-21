@@ -131,3 +131,4 @@ gradle-app.setting
 /temp/
 /public/
 .idea/dataSources.xml
+*.png

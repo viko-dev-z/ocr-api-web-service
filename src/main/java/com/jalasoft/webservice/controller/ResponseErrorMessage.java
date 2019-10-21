@@ -12,7 +12,10 @@
 
 package com.jalasoft.webservice.controller;
 
+import com.jalasoft.webservice.common.StandardValues;
 import org.json.JSONObject;
+
+import java.sql.Timestamp;
 
 /**
  * Subclass that implements methods from IResponse interface
@@ -29,6 +32,7 @@ public class ResponseErrorMessage extends Response {
     */
     public ResponseErrorMessage() {
         this.JSONMessage = new JSONObject();
+        JSONMessage.put(StandardValues.JSON_TAG_TIMESTAMP, new Timestamp(System.currentTimeMillis()));
     }
 
     @Override
@@ -38,11 +42,11 @@ public class ResponseErrorMessage extends Response {
 
     @Override
     public void setMessage(String message) {
-        JSONMessage.put("Message", message);
+        JSONMessage.put(StandardValues.JSON_TAG_MESSAGE, message);
     }
 
     @Override
     public void setDownloadURL(String path) {
-        JSONMessage.put("DownloadURL", path);
+        JSONMessage.put(StandardValues.JSON_TAG_DOWNLOAD_URL, path);
     }
 }

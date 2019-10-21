@@ -13,6 +13,8 @@
 package com.jalasoft.webservice.controller;
 
 import com.jalasoft.webservice.common.FileValidator;
+import com.jalasoft.webservice.common.ResponseBuilder;
+import com.jalasoft.webservice.common.StandardValues;
 import com.jalasoft.webservice.controller.params_validation.*;
 import com.jalasoft.webservice.error_handler.ConvertException;
 import com.jalasoft.webservice.model.*;
@@ -23,6 +25,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Properties;
 
 import static java.lang.Integer.parseInt;
 
@@ -63,47 +67,41 @@ public class ProcessPdfRestController extends ProcessAbstractRestController {
     @PostMapping
     @ResponseBody
     public ResponseEntity processPDFFile(
-            @RequestParam(value = "file") MultipartFile file,
-            @RequestParam(value = "checksum") String checksum,
-            @RequestParam(value = "startPage") String startPageText,
-            @RequestParam(value = "endPage") String endPageText,
-            @Value("${imagePath}") String propertyFilePath,
-            @Value("${downloadPath}") String downloadFilePath) {
+            @RequestParam(value = StandardValues.PARAM_FILE) MultipartFile file,
+            @RequestParam(value = StandardValues.PARAM_CHECKSUM) String checksum,
+            @RequestParam(value = StandardValues.PARAM_START_PAGE) String startPageText,
+            @RequestParam(value = StandardValues.PARAM_END_PAGE) String endPageText) {
 
+        // Validate the input params
         ValidateParams params = new ValidateParams();
-        params.addParam(new ChecksumParam("checksum", checksum));
-        params.addParam(new FileParam("file", file, checksum));
-        params.addParam(new IntParam("startPageText", startPageText));
-        params.addParam(new IntParam("endPageText", endPageText));
+        params.addParam(new ChecksumParam(checksum));
+        params.addParam(new FileParam(file, checksum, StandardValues.PDF_FILE_EXTENSION));
+        params.addParam(new PagesParam(new IntParam(StandardValues.PARAM_START_PAGE, startPageText),
+                                        new IntParam(StandardValues.PARAM_END_PAGE, endPageText)));
         ResponseEntity result = params.validateParams();
 
-        if (result.getStatusCode().equals(HttpStatus.BAD_REQUEST)) {
+        if (result.getStatusCode().value() >= HttpStatus.BAD_REQUEST.value()) {
             return result;
         }
 
         // Add the file to the temp folder and to the database if not exists
-        FileValidator.processFile(propertyFilePath, file, dbm, checksum);
+        FileValidator.processFile(StandardValues.PROPERTY_FILE_PATH, file, dbm, checksum);
 
+        // Set the pdfCriteria with the validated input dat
+        CriteriaPDF pdfCriteria = new CriteriaPDF();
+        pdfCriteria.setFilePath(dbm.getPath(checksum));
+        pdfCriteria.setStartPage(parseInt(startPageText));
+        pdfCriteria.setEndPage(parseInt(endPageText));
+        pdfCriteria.setDownloadPath(StandardValues.PROPERTY_DOWNLOAD_FILE_PATH + file.getOriginalFilename() + ".txt");
+
+        // Extracting Text from PDF by using PdfBox and Criteria
+        IConverter converter = new PDFConverter();
         try {
-            // Extracting Text from PDF by using PdfBox and Criteria
-            CriteriaPDF pdfCriteria = new CriteriaPDF();
-            pdfCriteria.setFilePath(dbm.getPath(checksum));
-            pdfCriteria.setStartPage(parseInt(startPageText));
-            pdfCriteria.setEndPage(parseInt(endPageText));
-
-            pdfCriteria.setDownloadPath(downloadFilePath + file.getOriginalFilename() + ".txt");
-
-            IConverter converter = new PDFConverter();
-
-            responsesSupported = ResponsesSupported.OK;
-            jsonMessage = new ResponseOkMessage();
-            jsonMessage.setCode("200");
             jsonMessage = converter.textExtractor(pdfCriteria);
-
-            return processResponse();
         } catch (ConvertException e) {
             e.printStackTrace();
         }
-        return processResponse();
+
+        return ResponseBuilder.getResponse(HttpStatus.OK, jsonMessage);
     }
 }

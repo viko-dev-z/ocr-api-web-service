@@ -12,17 +12,18 @@
 
 package com.jalasoft.webservice.controller.params_validation;
 
-import com.jalasoft.webservice.common.StandardValues;
 import com.jalasoft.webservice.error_handler.ParamsInvalidException;
 
-public class ChecksumParam extends AbstractParam  {
+public class PagesParam extends AbstractParam {
+    private IntParam startPage;
+    private IntParam endPage;
 
-    public ChecksumParam(Object value){
-        setName(StandardValues.CHECKSUM_NAME);
-        setValue(value);
+    public PagesParam(IntParam start, IntParam end){
+        this.startPage = start;
+        this.endPage = end;
     }
 
     public void accept(Visitor visitor) throws ParamsInvalidException {
-        visitor.visit(this);
+        visitor.visit(startPage, endPage);
     }
 }

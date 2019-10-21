@@ -12,7 +12,6 @@
 
 package com.jalasoft.webservice.controller.params_validation;
 
-import com.jalasoft.webservice.common.ResponseBuilder;
 import com.jalasoft.webservice.error_handler.ParamsInvalidException;
 import org.springframework.http.ResponseEntity;
 
@@ -27,10 +26,6 @@ public class ValidateParams {
         this.responseEntity = null;
     }
 
-    public void addParam(GenericParam param){
-        params.add(param);
-    }
-
     public ResponseEntity validateParams() {
         PostageVisitor visitor = new PostageVisitor();
 
@@ -38,21 +33,16 @@ public class ValidateParams {
             try {
                 param.accept(visitor);
             } catch (ParamsInvalidException paramIE){
-                paramIE.printStackTrace();
+                //paramIE.printStackTrace();
+                break;
             }
         }
-        return ResponseBuilder.getResponse(visitor.getValidationResult());
+        return visitor.getValidationResponseEntity();
     }
 
-    public void addParam(ChecksumParam checksum) {
-        params.add(checksum);
+    public void addParam(PagesParam pagesParam) {
+        params.add(pagesParam);
     }
 
-    public void addParam(FileParam fileParam){
-        params.add(fileParam);
-    }
-
-    public void addParam(IntParam intParam) {
-        params.add(intParam);
-    }
+    public void addParam(AbstractParam languageParam) { params.add(languageParam); }
 }

@@ -13,33 +13,27 @@
 package com.jalasoft.webservice.common;
 
 import com.jalasoft.webservice.controller.IResponse;
+import com.jalasoft.webservice.controller.Response;
 import com.jalasoft.webservice.controller.ResponseErrorMessage;
-import org.json.JSONObject;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 public class ResponseBuilder {
-    private static IResponse jsonMessage;
-    private static ResponseEntity responseEntity;
+    private static ResponseEntity validationResponseEntity;
 
-    public static ResponseEntity getResponse(String message) {
-        ResponseEntity responseEntity = new ResponseEntity(HttpStatus.PARTIAL_CONTENT);
-        if (!message.isEmpty()) {
-            jsonMessage = ResponseBuilder.getJSONResponse("400", message);
-            responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .header("Content-Type", "application/json; charset=UTF-8")
-                    .body(jsonMessage.getJSON());
-        }
-        return responseEntity;
-    }
-
-    private static IResponse getJSONResponse(String code, String message){
-        IResponse jsonMessage = null;
-        if (!message.isEmpty()) {
-            jsonMessage = new ResponseErrorMessage();
-            jsonMessage.setCode(code);
-            jsonMessage.setMessage(message);
-        }
-        return jsonMessage;
+    /**
+     * This method constructs a ResponseEntity with the parameters.
+     * According with httpCode parameter it will generate a 400 response or 200 response.
+     * @param httpCode defines the type of response to build.
+     * @param response contains the message that will displayed in the response.
+     * @return a ResponseEntity object with the respective http code and its message.
+     */
+    public static ResponseEntity getResponse(HttpStatus httpCode, IResponse response) {
+        response.setCode(httpCode.toString());
+        return ResponseEntity.status(httpCode)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)
+                    .body(response.getJSON());
     }
 }

@@ -15,10 +15,9 @@ package com.jalasoft.webservice.controller.params_validation;
 import com.jalasoft.webservice.common.StandardValues;
 import com.jalasoft.webservice.error_handler.ParamsInvalidException;
 
-public class ChecksumParam extends AbstractParam  {
-
-    public ChecksumParam(Object value){
-        setName(StandardValues.CHECKSUM_NAME);
+public class LanguageParam extends AbstractParam {
+    public LanguageParam(Object value){
+        setName(StandardValues.LANGUAGE);
         setValue(value);
     }
 

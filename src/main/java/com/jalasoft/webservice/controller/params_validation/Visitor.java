@@ -19,4 +19,6 @@ public interface Visitor {
     void visit(ChecksumParam param) throws ParamsInvalidException;
     void visit(IntParam intParam) throws ParamsInvalidException;
     void visit(FileParam file) throws ParamsInvalidException;
+    void visit(IntParam startPage, IntParam endPage) throws ParamsInvalidException;
+    void visit(LanguageParam languageParam) throws ParamsInvalidException;
 }
