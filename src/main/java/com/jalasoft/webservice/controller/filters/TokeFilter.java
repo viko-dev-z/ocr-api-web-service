@@ -35,7 +35,7 @@ public class TokeFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest)request;
         HttpServletResponse res = (HttpServletResponse)response;
         String url = req.getRequestURL().toString();
-boolean test = url.contains("/file");
+
         if (url.contains("/login") || url.contains("/file") || Cache.getInstance().isValid(req.getHeader(HttpHeaders.AUTHORIZATION).split(StandardValues.SPACE)[1])){
             chain.doFilter(request, response);
         } else {
