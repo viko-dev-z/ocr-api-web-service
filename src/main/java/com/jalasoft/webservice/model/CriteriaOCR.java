@@ -12,7 +12,14 @@
 
 package com.jalasoft.webservice.model;
 
+import com.jalasoft.webservice.error_handler.ParamsInvalidException;
+import com.jalasoft.webservice.model.validation.Context;
+import com.jalasoft.webservice.model.validation.IValidateStrategy;
+import com.jalasoft.webservice.model.validation.LangValidation;
+import com.jalasoft.webservice.model.validation.NullOrEmptyValidation;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Subclass to manage the API Request Body parameters.
@@ -38,6 +45,16 @@ public class CriteriaOCR extends Criteria {
 
     public void setLang(String lang) {
         this.lang = lang;
+    }
+
+    public void validate() throws ParamsInvalidException {
+        List<IValidateStrategy> values = new ArrayList<>();
+        values.add(new NullOrEmptyValidation(this.lang));
+        values.add(new LangValidation(this.lang));
+        values.add(new NullOrEmptyValidation(this.getFilePath()));
+
+        Context context = new Context(values);
+        context.validate();
     }
 }
 

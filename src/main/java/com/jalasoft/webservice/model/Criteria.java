@@ -13,6 +13,7 @@
 package com.jalasoft.webservice.model;
 
 
+import com.jalasoft.webservice.error_handler.ParamsInvalidException;
 
 /**
  * Superclass to manage the Criteria for API parameters.
@@ -40,4 +41,6 @@ public abstract class Criteria {
         this.filePath = filePath;
     }
 
+    public void validate() throws ParamsInvalidException {
+    }
 }
